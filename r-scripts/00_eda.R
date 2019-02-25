@@ -1,5 +1,6 @@
 library(tidyverse)
 library(readxl)
+library(magrittr)
 
 setwd("./repos/cfmc-dashboard/r-scripts")
 
@@ -37,6 +38,7 @@ see_unique <- function(df, x) {
 
 unused_vars <- c("Ftype", "Program", "School", "Scholar", "X__1")
 date_vars <- c("DateFirstGrant", "DateLastGrant", "DateLargestGrant")
+
 
 ## Quant
 plot(density(fund1$Grant_DAmt))
@@ -86,3 +88,101 @@ see_unique(fund1, Disability) ## (NAs) (7) not sure how to collapse groups (mayb
 see_unique(fund1, Economic) ## (NAs) (2 - low income, homeless)     
 see_unique(fund1, Ethnic) ## (NAs) (2) no idea what these are ****  
 see_unique(fund1, Gender) ## (NAs) (2)
+
+##----------------------
+## Feature Engineering
+##---------------------
+educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development")
+env <- c("Animal Related","Environment")
+poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous")
+peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men")
+public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental")
+arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement")
+
+fund1 %<>% 
+  mutate(impact_area = ifelse(Program_Area %in% educ, "Education",
+                              ifelse(Program_Area %in% env, "Environment and Climate Change",
+                                     ifelse(Program_Area %in% poverty_alleviation, "Poverty Alleviation",
+                                            ifelse(Program_Area %in% peace_and_human_rights, "Peace and Human Rights",
+                                                   ifelse(Program_Area %in% public_health, "Public Health",
+                                                          ifelse(Program_Area %in% arts, "Arts", "Uncategorized")))))))
+fund1$year <- str_extract(fund1$Batch, "(?<=-)[0-9]{2}") %>% 
+  as.factor
+
+##-----------------------
+## Multivariate exploration
+##-----------------------
+
+## How much money came from each fund? --> table [Count/DAmt]displaying top 5 results 
+my_viz <- fund1 %>% 
+  select(Fund_Alpha, Fund_DAmt) %>% 
+  group_by(Fund_Alpha) %>% 
+  summarise(total_DAmt = sum(Fund_DAmt),
+            count = n(),
+            avg_DAmt = total_DAmt/count) %>% 
+  arrange(desc(total_DAmt))
+
+cor(my_viz[2:4]) ##  bigger Funds tend to give bigger avg. funds
+
+## What are my big areas of impact? --> Bar chart 6 columns
+my_viz <- fund1 %>% 
+  group_by(impact_area) %>% 
+  summarise(impact_n = n()) ## Lots of funds toward poverty alleviation
+
+ggplot(my_viz) +
+  geom_bar(aes(x = impact_area, y = impact_n), stat = "identity") +
+  labs(title = "# of Funds ~ Impact Area") + 
+  theme(axis.text.x = element_text(angle = 10, hjust = 1))
+
+## How much goes into each area of impact? --> Bar chart [by year] (raw $ + perc of that year)
+my_viz <- fund1 %>% 
+  group_by(year, impact_area) %>% 
+  summarize(impact_DAmt = sum(Fund_DAmt)) ## gave out 1.2M in 2 years
+
+ggplot(my_viz) +
+  geom_bar(aes(x = impact_area, y = impact_DAmt, fill = year),
+           stat = "identity", position = "dodge") +
+  geom_text(aes(x = impact_area, y = impact_DAmt, label = round(impact_DAmt, 0))) +
+  labs(title = "Total $ ~ Impact Area") + 
+  theme(axis.text.x = element_text(angle = 10, hjust = 1)) ## roughly same amount goes into each category
+
+
+## What category does the money come from?
+my_viz <- fund1 %>% 
+  group_by(year, Fdescript) %>% 
+  summarize(total_DAmt = sum(Fund_DAmt),
+         count = n(),
+         avg_DAmt = total_DAmt/count)
+ggplot(my_viz) +
+  geom_bar(aes(x = Fdescript, y = total_DAmt), stat = 'identity') +
+  facet_grid(~year) + 
+  labs(title = "Total $ ~ Fund type") + 
+  theme(axis.text.x = element_text(angle = 10, hjust = 1))
+
+
+## Which fund type contributes to impact_area?
+my_viz <- fund1 %>% 
+  group_by(year, Fdescript, impact_area) %>% 
+  summarize(total_DAmt = sum(Fund_DAmt),
+            count = n(),
+            avg_DAmt = total_DAmt/count) %>%
+  filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
+ggplot(my_viz, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
+  geom_alluvium(aes(fill = Fdescript), width = 1/12) +
+  geom_stratum() +
+  geom_label(stat = 'stratum', label.strata = TRUE) +
+  ggtitle("$ From Funds to Impact Area") + 
+  facet_grid(~year)
+
+# my_viz2 <- fund1 %>% 
+#   group_by(year, Fdescript, impact_area) %>% 
+#   summarize(total_DAmt = sum(Fund_DAmt),
+#             count = n(),
+#             avg_DAmt = total_DAmt/count) %>% 
+#   filter(!(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted")))
+# 
+# ggplot(my_viz2, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
+#   geom_alluvium(aes(fill = Fdescript), width = 1/12) +
+#   geom_stratum() +
+#   geom_label(stat = 'stratum', label.strata = TRUE)
+

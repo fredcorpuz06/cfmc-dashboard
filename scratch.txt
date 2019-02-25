@@ -1,0 +1,80 @@
+# EDUCATION: expand access to education, improve existing education systems, better integrate technology into classrooms, and provide critical higher education opportunities to economically disadvantaged groups
+ [2] "Education (Community Wide/Schools)"
+ [5] "Scholarship"
+[27] "Science" 
+[10] "Positive Youth Development"
+
+educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development")
+
+# ENVIRONMENT AND CLIMATE CHANGE: expanding the renewable energy economy, creating green jobs, and accelerating progress towards a sustainable future
+[11] "Animal Related"
+ [7] "Environment" 
+
+env <- c("Animal Related","Environment")
+
+# POVERTY ALLEVIATION: developing and scaling new innovations in the fields of economic empowerment, affordable technology, and agricultural developmenT
+[25] "Community Devel" 
+[29] "Neighborhood Enhancement"
+ [1] "Human Services"
+ [4] "Public/Social Benefit (Civic Improve/Social Srvcs)"
+[23] "Capacity Building" 
+ [9] "Economic Security/Opportunity" 
+[17] "Economic Development"
+[39] "Public Safety" 
+[32] "Capital" 
+[35] "Haiti" 
+[28] "United Way"
+[34] "Essex" 
+[38] "Miscellaneous" 
+
+poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous")
+
+# PEACE AND HUMAN RIGHTS: spearheading awareness campaigns, building communities of dialogue on and off campus, and bringing together diverse ethnic, religious, and political groups to forge effective, long-term solutions
+[24] "Human Rights" 
+[36] "Legal" 
+[37] "Mental Health" 
+[40] "Veterans"
+[30] "Public Affairs"
+[31] "Safer Communities" 
+[16] "Religion"
+[13] "Women & Girls" 
+[22] "Boys & Young Men"
+
+peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men")
+
+
+# PUBLIC HEALTH: expand access to essential services and medicines by exploring innovative ways to promote health and prevent disease
+[26] "Disaster Relief"
+[12] "Community Health (Health/Medical/Hospital Care)" 
+[21] "Basic Human Need"
+[19] "Disease/Disorder"
+[33] "Dental"
+
+public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental")
+
+# ARTS
+ [3] "Arts"
+[14] "Recreation"
+[15] "Camp"
+[18] "Sports/Leisure"
+[20] "Music" 
+ [8] "Community Enrichment (Arts/Culture/Heritage)"
+ [6] "Heritage Enhancement"
+
+
+arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement")
+
+
+
+-----------------------------
+educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development")
+
+env <- c("Animal Related","Environment")
+
+poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous")
+
+peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men")
+
+public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental")
+
+arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement")
