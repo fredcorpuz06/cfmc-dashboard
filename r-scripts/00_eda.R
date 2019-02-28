@@ -1,6 +1,7 @@
 library(tidyverse)
 library(readxl)
 library(magrittr)
+library(ggalluvial)
 
 setwd("./repos/cfmc-dashboard/r-scripts")
 
@@ -58,11 +59,14 @@ see_unique(fund1, Effect_Code)  ## (NAs) (8 different effects)
 
 ## Names
 see_unique(fund1, Program_Name) ## "general support" is a catch-all
-see_unique(fund1, Organization)  ## names of places
+see_unique(fund1, Organization)  ## names of places ==> top 5 places who receive
 
 ## how CFMC classifies/processes this money
 see_unique(fund1, Batch) # 8 committees        
 see_unique(fund1, Fdescript) ## 7 types of money flow 
+  ## geographic affiliate --> affiliate
+  ## remove agency funds
+
 see_unique(fund1, Cmte)  ## "None" --> NA
 see_unique(fund1, Grant_Typ) ## refer to flowchart  
 
@@ -70,6 +74,8 @@ see_unique(fund1, Grant_Typ) ## refer to flowchart
 see_unique(fund1, Region) ## ask Thayer to group stuff
 see_unique(fund1, Region__1) ## don't know what the difference is
 see_unique(fund1, County_Served)## (NAs) 
+
+## all of county: north county, south county, all county
 
 ## Things to take into account when awarding grants
 see_unique(fund1, Request_Type) ## mostly operations/program development (23) --> can make bigger groups    
@@ -166,13 +172,20 @@ my_viz <- fund1 %>%
   summarize(total_DAmt = sum(Fund_DAmt),
             count = n(),
             avg_DAmt = total_DAmt/count) %>%
-  filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
+  # filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
+filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
 ggplot(my_viz, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
   geom_alluvium(aes(fill = Fdescript), width = 1/12) +
   geom_stratum() +
   geom_label(stat = 'stratum', label.strata = TRUE) +
   ggtitle("$ From Funds to Impact Area") + 
   facet_grid(~year)
+
+## Same size flows but show connections with $ Amt
+## think about how to use Secondary categories ==> another set of flows to secondary project category
+  ## educate nonprofit into telling their stories better
+## give the message to the board that we do it all! 
+
 
 # my_viz2 <- fund1 %>% 
 #   group_by(year, Fdescript, impact_area) %>% 
@@ -186,3 +199,5 @@ ggplot(my_viz, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
 #   geom_stratum() +
 #   geom_label(stat = 'stratum', label.strata = TRUE)
 
+
+## three words describing what the CFMC does
