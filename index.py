@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
-from app import app
+from app import app, server
 from apps import summaries, trends
 
 

@@ -1,4 +1,4 @@
-print('Time trends')
+# print('Time trends')
 
 import dash
 import dash_core_components as dcc
