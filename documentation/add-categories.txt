@@ -1,0 +1,10 @@
+# Extra Org Program Area
+
+ [1] "None"                 NA                     "Food/Nutrition"      
+ [4] "Wkforce Development"  "Theater"              "Technical"           
+ [7] "Operational Expenses" "Volunteer"            "Shelter/Housing"     
+[10] "Transportation"       "Dance"               
+
+# Extra Second Program Area
+
+[1] NA               "Civil Rights"   "General Health"

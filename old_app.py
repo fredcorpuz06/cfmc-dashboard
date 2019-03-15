@@ -132,3 +132,7 @@ def update_bar_yearly(money_metric, year):
             'title': '{} by Fund Type in {}'.format(money_metric, year)
         }
     }
+
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
