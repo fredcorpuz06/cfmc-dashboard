@@ -1,0 +1,79 @@
+# Middletown
+"Middletown"
+
+# North County
+"Northern County"
+"Cromwell"
+"Middlefield"
+"East Hampton"
+"Haddam"
+"Portland"
+"Durham/Middlefie"
+
+# South County
+"Southern/Low Cty"
+"Essex"
+"Old Saybrook"
+"East Haddam"
+"Westbrook"
+"Clinton"
+"Chester/DR/Essex"
+"Chester"
+"Deep River"
+"Durham"
+"Haddam/Killingwo"
+"Killingworth"
+"Essex/Deep River"
+"CT River Valley"
+"Ivoryton"
+
+# All of County
+"All County"
+"All of CT"
+"CT/Out of County"
+"Out of State"
+"International"
+"Multiple Towns"
+"National-All US"
+
+##----------------------------------
+
+middletown <- c("Middletown")      
+                  
+north_county <- c("Northern County", "Cromwell", "Middlefield", "East Hampton", "Haddam", "Portland", "Durham/Middlefie")
+    
+south_county <- c("Southern/Low Cty", "Essex", "Old Saybrook", "East Haddam", "Westbrook", "Clinton", "Chester/DR/Essex", "Chester", "Deep River", "Durham", "Haddam/Killingwo", "Killingworth", "Essex/Deep River", "CT River Valley", "Ivoryton")
+
+all_county_plus <- c("All County", "All of CT", "CT/Out of County", "Out of State", "International", "Multiple Towns", "National-All US")
+
+
+       
+
+         
+
+
+         
+
+   
+        
+
+     
+
+    
+          
+
+      
+
+          
+        
+
+
+
+    
+ 
+        
+
+
+ 
+  
+ 

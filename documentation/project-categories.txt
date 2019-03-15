@@ -7,14 +7,13 @@ https://www.clintonfoundation.org/clinton-global-initiative/meetings/cgi-univers
  [5] "Scholarship"
 [27] "Science" 
 [10] "Positive Youth Development"
+"Technical"
 
-educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development")
 
 # ENVIRONMENT AND CLIMATE CHANGE: expanding the renewable energy economy, creating green jobs, and accelerating progress towards a sustainable future
 [11] "Animal Related"
  [7] "Environment" 
 
-env <- c("Animal Related","Environment")
 
 # POVERTY ALLEVIATION: developing and scaling new innovations in the fields of economic empowerment, affordable technology, and agricultural developmenT
 [25] "Community Devel" 
@@ -30,8 +29,11 @@ env <- c("Animal Related","Environment")
 [28] "United Way"
 [34] "Essex" 
 [38] "Miscellaneous" 
+"Transportation"
+"Shelter/Housing"
+"Volunteer"
+"Wkforce Development"
 
-poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous")
 
 # PEACE AND HUMAN RIGHTS: spearheading awareness campaigns, building communities of dialogue on and off campus, and bringing together diverse ethnic, religious, and political groups to forge effective, long-term solutions
 [24] "Human Rights" 
@@ -43,8 +45,8 @@ poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human 
 [16] "Religion"
 [13] "Women & Girls" 
 [22] "Boys & Young Men"
+"Civil Rights"
 
-peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men")
 
 
 # PUBLIC HEALTH: expand access to essential services and medicines by exploring innovative ways to promote health and prevent disease
@@ -53,8 +55,9 @@ peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Vetera
 [21] "Basic Human Need"
 [19] "Disease/Disorder"
 [33] "Dental"
+"General Health"
+"Food/Nutrition"
 
-public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental")
 
 # ARTS
  [3] "Arts"
@@ -64,21 +67,24 @@ public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital
 [20] "Music" 
  [8] "Community Enrichment (Arts/Culture/Heritage)"
  [6] "Heritage Enhancement"
+ "Theater"
+ "Dance" 
 
 
-arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement")
 
 
+##-------------------------
 
------------------------------
-educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development")
+educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development", "Technical")
 
 env <- c("Animal Related","Environment")
 
-poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous")
+poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous", "Transportation", "Shelter/Housing", "Volunteer", "Wkforce Development")
 
-peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men")
+peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men", "Civil Rights")
 
-public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental")
+public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental", "General Health", "Food/Nutrition")
 
-arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement")
+arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement", "Theater", "Dance" )
+
+

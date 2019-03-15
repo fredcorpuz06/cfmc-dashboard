@@ -1,0 +1,8 @@
+"Agency/Org."
+"Designated"
+"Donor Advised"
+"Field of Interst"
+"Fiscal Sponsor"
+"Geographic Affil"
+"Project"
+"Unrestricted"
