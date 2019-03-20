@@ -1,5 +1,3 @@
-# print('Time trends')
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -8,8 +6,13 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
 from app import app, indicator
+from app_utils import graphers
+
 
 colors = {"background": "#F3F6FA", "background_div": "white"}
+
+# Utils
+pg = graphers.PlotlyGrapher()
 
 # Data 
 
@@ -225,7 +228,7 @@ def right_cases_indicator2_callback(df):
     ]
 )
 def graph1b_callback(c1, c2):
-    return pie_chart()
+    return pg.pie_chart()
 
 @app.callback(
     Output('graph2b', 'figure'),
@@ -235,7 +238,7 @@ def graph1b_callback(c1, c2):
     ]
 )
 def graph2b_callback(c1, c2):
-    return pie_chart()
+    return pg.pie_chart()
 
 @app.callback(
     Output('graph3b', 'figure'),
@@ -245,7 +248,7 @@ def graph2b_callback(c1, c2):
     ]
 )
 def graph3_callback(c1, c2):
-    return time_line()
+    return pg.bar_chart()
 
 @app.callback(
     Output('graph4b', 'figure'),
@@ -255,7 +258,4 @@ def graph3_callback(c1, c2):
     ]
 )
 def graph4_callback(c1, c2):
-    return time_line()
-
-
-print('Trends finish execution')
+    return pg.bar_chart()

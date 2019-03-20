@@ -1,27 +1,29 @@
-# print('Summaries')
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 import numpy as np
 import pandas as pd
-import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 import os
 import psycopg2
 
-from app import app, indicator
 
+from app import app, indicator
+from app_utils import graphers
 colors = {"background": "#F3F6FA", "background_div": "white"}
 
+
+# Utils
+pg = graphers.PlotlyGrapher()
+
 # Data 
-# grants = pd.read_csv("./data/grants_clean.csv")
-# funds = pd.read_csv("./data/funds_clean.csv")
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-grants = pd.read_sql_query("SELECT * FROM grants;", conn)
-funds = pd.read_sql_query("SELECT * FROM funds;", conn)
+grants = pd.read_csv("./data/grants_clean.csv")
+funds = pd.read_csv("./data/funds_clean.csv")
+# DATABASE_URL = os.environ['DATABASE_URL']
+# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+# grants = pd.read_sql_query("SELECT * FROM grants;", conn)
+# funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
 df = grants
 
@@ -44,94 +46,6 @@ def global_subset(yearRange, varChoice1, varChoice2):
     return dff
 
 # Graphs
-def time_line(time_values, mode='lines+markers'):
-    traces = [go.Scatter(
-        x=t['label'],
-        y=t['value'],
-        name=t['name'],
-        mode=mode,
-    ) for t in time_values]
-
-    layout = go.Layout(
-        margin=dict(l=40, r=25, b=40, t=0, pad=4)
-    )
-    return {'data': traces, 'layout': layout}
-
-def pie_chart():
-    # traces = [go.Pie(label=s['labels'], values=s['values']) for s in slices]
-
-    trace = go.Pie(
-        labels=['a','b'],
-        values=[1,2],
-        # markers={'colors': ["#264e86", "#74dbef"]}
-    )
-    traces = [trace]
-
-    layout = go.Layout(
-        margin=dict(l=0, r=0, b=0, t=4, pad=8),
-        legend=dict(orientation="h"),
-    )
-
-    return {'data': traces, 'layout': layout}
-
-def bar_chart(bars, barmode='stack'):
-
-    traces = [go.Bar(
-        x=b['label'], y=b['value'], name=b['name']
-    ) for b in bars]
-    # data = [t for t in traces]
-    layout = go.Layout(
-        barmode=barmode,
-        margin=dict(l=40, r=25, b=40, t=0, pad=4),
-    )
-
-    return {'data': traces, 'layout': layout}
-
-def histogram(hists, barmode='overlay'):
-    traces = [go.Histogram(x=h['values'], opacity=0.75) for h in hists]   
-    layout = go.Layout(
-        barmode=barmode,
-        margin=dict(l=40, r=25, b=40, t=0, pad=4),
-    )
-    return {'data': traces, 'layout': layout}
-
-
-def sankey_diag(flows):
-    # flows = pd.read_csv('./data/scratch.csv')
-    # flows = pd.read_csv('./data/scratch3.csv')
-    for k, f in flows.items()   :
-        # print(f.unique())
-        print(k, len(f))
-    node=dict(
-        pad=15,
-        thickness=20,
-        line=dict(
-            color='black',
-            width=0.5
-        ),
-        
-        # label=flows.label[:14],
-        # label=flows.label[:14],
-        label=flows['label'],
-        # color=["blue", "blue", "blue", "blue", "blue", "blue"]
-    )
-    link=dict(
-        # source=flows.source,
-        # target=flows.target,
-        # value=flows.value,
-        source=flows['source'],
-        target=flows['target'],
-        value=flows['value'],
-        
-    )    
-    trace = go.Sankey(node=node, link=link)
-    
-    layout = go.Layout(
-        margin=dict(l=40, r=25, b=40, t=40, pad=4),
-    )
-    
-    # dcc.Graph(figure={'data': [data_trace], 'layout': layout})
-    return {'data': [trace], 'layout': layout}
 
     
 layout = [
@@ -150,22 +64,6 @@ layout = [
                 ),
                 style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
             ),
-
-
-            # html.Div(
-            #     dcc.Slider(
-            #         id="yearRange",
-            #         marks={str(i): str(i) for i in years},
-            #         min=years.min(),
-            #         max=years.max(),
-            #         value=years.max()
-            #     ),
-            #     className="two columns",
-
-            #     # style={"marginBottom": "10"},
-            #     style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
-
-            # ),
             
             html.Div(
                 dcc.Dropdown(
@@ -259,17 +157,7 @@ layout = [
                 ),
             ],
             className="twelve columns chart_div",
-            style={"height": 700}), 
-
-            # html.Div([
-            #     html.P('Breakdown of'),
-            #     dcc.Graph(
-            #         id='singleVarPie',
-            #         config=dict(displayModeBar=False),
-            #         style={'height': '89%', 'width': '98%'}
-            #     ),
-            # ],
-            # className="six columns chart_div"),        
+            style={"height": 700}),    
         ],
         className='row',
         style={'marginTop': '5px'}
@@ -418,7 +306,7 @@ def graph1_callback(yearRange, summaryType, varChoice1, varChoice2):
 
     }
 
-    return sankey_diag(flows)
+    return pg.sankey_diag(flows)
 
 @app.callback(
     Output('singleVarPie', 'figure'),
@@ -428,7 +316,7 @@ def graph1_callback(yearRange, summaryType, varChoice1, varChoice2):
     ]
 )
 def graph2_callback(c1, c2):
-    return pie_chart()
+    return pg.pie_chart()
 
 @app.callback(
     Output('singleVarBar', 'figure'),
@@ -467,7 +355,7 @@ def singleVarBar_callback(yearRange, summaryType, varChoice1, varChoice2):
     }]           
     
     # print(bars)
-    return bar_chart(bars)
+    return pg.bar_chart(bars)
 
 @app.callback(
     Output('singleVarHist', 'figure'),
@@ -503,7 +391,7 @@ def graph4_callback(yearRange, summaryType, varChoice1):
         times.append(bar)
 
 
-    return time_line(times)
+    return pg.time_line(times)
 
 
 
@@ -545,5 +433,3 @@ def grantsTable_callback(page_s, sort_s, filter_s):
 
     return dff.iloc[startP:endP].to_dict('rows')
 
-
-print('Summaries finish execution')
