@@ -5,6 +5,15 @@ from sqlalchemy import create_engine
 import os 
 import psycopg2
 
+
+from app_utils import graphers
+
+# print(dir(graphers))
+x = graphers.PlotlyGrapher()
+# x.hi()
+print(x.pie_chart())
+
+
 # DATABASE_URL = os.environ['DATABASE_URL']
 # DATABASE_URL = "postgresql-dimensional-36261"
 
@@ -12,25 +21,25 @@ import psycopg2
 # cmd = "heroku config:get DATABASE_URL"
 # DATABASE_URL = os.popen(cmd).read()
 # print(DATABASE_URL)
-DATABASE_URL = "host=ec2-50-17-231-192.compute-1.amazonaws.com dbname=dbpcnq9cirtphf user=rnkbpafrerjisd  password=57c384efff4206b3556c7b33fd99a3e936a856658b3ebc5870a204e2a8dea9a9 sslmode=require"
+# DATABASE_URL = "host=ec2-50-17-231-192.compute-1.amazonaws.com dbname=dbpcnq9cirtphf user=rnkbpafrerjisd  password=57c384efff4206b3556c7b33fd99a3e936a856658b3ebc5870a204e2a8dea9a9 sslmode=require"
 # conn = psycopg2.connect(
 #     host="ec2-50-17-231-192.compute-1.amazonaws.com",
 #     dbname="dbpcnq9cirtphf",
 #     user="rnkbpafrerjisd",
 #     password="57c384efff4206b3556c7b33fd99a3e936a856658b3ebc5870a204e2a8dea9a9",
 #     port=5432,
-#     sslmode="require"
+#     # sslmode="require"
 # )
-conn = psycopg2.connect(DATABASE_URL)
-cur = conn.cursor()
-cur.execute('CREATE TABLE test (id PRIMARY KEY, num INTEGER, data VARCHAR);')
-cur.execute('INSERT INTO test (num, data) VALUES (100, "abc");')
-cur.execute('SELECT * FROM test;')
-rez = cur.fetchall()
-print(rez)
+# conn = psycopg2.connect(DATABASE_URL)
+# cur = conn.cursor()
+# cur.execute('CREATE TABLE test (id PRIMARY KEY, num INTEGER, data VARCHAR);')
+# cur.execute('INSERT INTO test (num, data) VALUES (100, "abc");')
+# cur.execute('SELECT * FROM test;')
+# rez = cur.fetchall()
+# print(rez)
 
-conn.commit()
-conn.close()
+# conn.commit()
+# conn.close()
 
 
 
