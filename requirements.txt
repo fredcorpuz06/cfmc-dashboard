@@ -26,6 +26,7 @@ mccabe==0.6.1
 nbformat==4.4.0
 pandas==0.24.1
 plotly==3.6.1
+psycopg2==2.7.6.1
 pylint==2.2.2
 pytz==2018.9
 requests==2.21.0

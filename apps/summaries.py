@@ -8,14 +8,20 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
+import os
+import psycopg2
 
 from app import app, indicator
 
 colors = {"background": "#F3F6FA", "background_div": "white"}
 
 # Data 
-grants = pd.read_csv("./data/grants_clean.csv")
-funds = pd.read_csv("./data/funds_clean.csv")
+# grants = pd.read_csv("./data/grants_clean.csv")
+# funds = pd.read_csv("./data/funds_clean.csv")
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+grants = pd.read_sql_query("SELECT * FROM grants;", conn)
+funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
 df = grants
 

@@ -1,0 +1,15 @@
+heroku pg:psql postgresql-dimensional-36261 --app cfmc-dashboard
+
+CREATE TABLE grants (
+    year INT,
+    program_name VARCHAR(240),
+    org_name VARCHAR(80),
+    project_impact VARCHAR(80),
+    org_impact VARCHAR(80),
+    region VARCHAR(80),
+    requested_damt REAL,
+    grant_damt REAL,
+    lifetime_grant REAL
+);
+
+\copy grants FROM 'C:\Users\fredcorpuz06\Desktop\repos\cfmc-dashboard\data\grants_clean.csv' (FORMAT csv, HEADER);
