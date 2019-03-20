@@ -3,6 +3,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go
@@ -15,9 +16,13 @@ colors = {"background": "#F3F6FA", "background_div": "white"}
 # Data 
 grants = pd.read_csv("./data/grants_clean.csv")
 funds = pd.read_csv("./data/funds_clean.csv")
+
+df = grants
+
 years = grants.year.unique().astype(int)
 summary_types = ['gross_total', 'count', 'ave_amt']
 var_choices = ['fund_type', 'project_impact', 'org_impact', 'region']
+PAGE_SIZE = 15
 
 # General functions
 def global_subset(yearRange, varChoice1, varChoice2):
@@ -85,43 +90,39 @@ def histogram(hists, barmode='overlay'):
     return {'data': traces, 'layout': layout}
 
 
-def sankey_diag():
-    # data = dict(
-    #     type= 'sankey',
-    #     node=dict(
-    #         pad=15,
-    #         thickness=20,
-    #         line=dict(
-    #             color='black',
-    #             width=0.5
-    #         )
-    #     ),
-    #     link=dict(
-    #         source=[0,1,0,2,3,3],
-    #         target=[2,3,3,4,4,5],
-    #         value=[8,4,2,8,4,2]
-    #     )
-    # ),
-
-    trace = go.Sankey(
-        node=dict(
-            pad=15,
-            thickness=20,
-            line=dict(
-                color='black',
-                width=0.5
-            ),
-            label=["A1", "A2", "B1", "B2", "C1", "C2"],
-            color=["blue", "blue", "blue", "blue", "blue", "blue"]
+def sankey_diag(flows):
+    # flows = pd.read_csv('./data/scratch.csv')
+    # flows = pd.read_csv('./data/scratch3.csv')
+    for k, f in flows.items()   :
+        # print(f.unique())
+        print(k, len(f))
+    node=dict(
+        pad=15,
+        thickness=20,
+        line=dict(
+            color='black',
+            width=0.5
         ),
-        link=dict(
-            source=[0,1,0,2,3,3],
-            target=[2,3,3,4,4,5],
-            value=[8,4,2,8,4,2]
-        )
+        
+        # label=flows.label[:14],
+        # label=flows.label[:14],
+        label=flows['label'],
+        # color=["blue", "blue", "blue", "blue", "blue", "blue"]
     )
+    link=dict(
+        # source=flows.source,
+        # target=flows.target,
+        # value=flows.value,
+        source=flows['source'],
+        target=flows['target'],
+        value=flows['value'],
+        
+    )    
+    trace = go.Sankey(node=node, link=link)
     
-    layout = go.Layout()
+    layout = go.Layout(
+        margin=dict(l=40, r=25, b=40, t=40, pad=4),
+    )
     
     # dcc.Graph(figure={'data': [data_trace], 'layout': layout})
     return {'data': [trace], 'layout': layout}
@@ -138,7 +139,8 @@ layout = [
                     max=years.max(),
                     marks={i: str(i) for i in years},
                     step=1,
-                    value=[years.min(), years.max()]
+                    # value=[years.min(), years.max()]
+                    value=[2008, 2015]
                 ),
                 style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
             ),
@@ -195,7 +197,7 @@ layout = [
                         {"label": var_choices[2], "value": var_choices[2]},
                         {"label": var_choices[3], "value": var_choices[3]},
                     ],
-                    value=var_choices[2],
+                    value=var_choices[3],
                     clearable=False,
                 ),
                 className="two columns",
@@ -250,7 +252,8 @@ layout = [
                     style={'height': '89%', 'width': '98%'}
                 ),
             ],
-            className="twelve columns chart_div"), 
+            className="twelve columns chart_div",
+            style={"height": 700}), 
 
             # html.Div([
             #     html.P('Breakdown of'),
@@ -293,6 +296,35 @@ layout = [
         style={'marginTop': '5px'}
     ),
 
+    # data table
+    html.Div(
+        [
+            html.Div([
+                html.P('Top 5 grant recepients'),
+                dash_table.DataTable(
+                    id='grantsTable',
+                    columns=[{"name": i, "id": i} for i in df.columns],
+                    pagination_settings={
+                        'current_page': 0,
+                        'page_size': PAGE_SIZE
+                    },
+                    pagination_mode='be',
+                    filtering='be',
+                    filtering_settings='',
+                    sorting='be',
+                    sorting_type='multi',
+                    sorting_settings=[],
+
+                    style_data={'whiteSpace': 'normal'},
+                    css=[{
+                        'selector': '.dash-cell div.dash-cell-value',
+                        'rule': 'display: inline; white-space: inherit; overflow: inherit; text-overflow: inherit;'
+                    }],
+                )
+           ]) 
+        ]
+    )
+
 ]
 
 # indicator interactions
@@ -330,12 +362,57 @@ def right_cases_indicator_callback(df):
 @app.callback(
     Output('sankey', 'figure'),
     [
-        Input('varChoice1', 'value'),
+        Input('yearRange', 'value'),
         Input('summaryType', 'value'),
+        Input('varChoice1', 'value'),
+        Input('varChoice2', 'value')
     ]
 )
-def graph1_callback(c1, c2):
-    return sankey_diag()
+def graph1_callback(yearRange, summaryType, varChoice1, varChoice2):
+    
+    df = funds
+    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
+    dff = dff[['fund_type', varChoice1, varChoice2, 'fund_damt']]
+
+    g = dff.groupby(['fund_type', varChoice1, varChoice2])
+    rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
+        'sum': summary_types[0],
+        '<lambda>': summary_types[1],
+        'mean': summary_types[2]
+    })['fund_damt'].reset_index()
+
+    rez01 = rez[['fund_type', varChoice1] + summary_types].rename(columns={
+        'fund_type': 'source',
+        varChoice1: 'target'
+    }
+    )
+    rez12 = rez[[varChoice1, varChoice2] + summary_types].rename(columns={
+        varChoice1: 'source',
+        varChoice2: 'target'
+    })
+
+    rez_all = rez01.append(rez12, ignore_index=True)
+    # rez_all = rez01
+    source_nodes = rez_all.source.tolist()
+    target_nodes = rez_all.target.tolist()
+    all_nodes = set(source_nodes + target_nodes)
+
+    myMap = {}
+    for i, n in enumerate(sorted(all_nodes)):
+        myMap[n] = i
+
+    rez_all = rez_all.replace(myMap)
+    # print(rez_all)
+
+    flows = {
+        'source': rez_all.source.tolist(),
+        'target': rez_all.target.tolist(),
+        'value': rez_all[summaryType].tolist(),
+        'label': list(sorted(myMap.keys())),
+
+    }
+
+    return sankey_diag(flows)
 
 @app.callback(
     Output('singleVarPie', 'figure'),
@@ -421,6 +498,46 @@ def graph4_callback(yearRange, summaryType, varChoice1):
 
 
     return time_line(times)
+
+
+
+@app.callback(
+    Output('grantsTable', 'data'),
+    [
+        Input('grantsTable', 'pagination_settings'),
+        Input('grantsTable', 'sorting_settings'),
+        Input('grantsTable', 'filtering_settings'),
+    ]
+)
+
+def grantsTable_callback(page_s, sort_s, filter_s):
+    filter_exps = filter_s.split(' && ')
+    dff = df
+    for f in filter_exps:
+        if ' eq ' in f:
+            col_name = f.split(' eq ')[0]
+            filter_value = f.split(' eq ')[1]
+            dff = dff.loc[dff[col_name] == filter_value]
+        elif ' > ' in f:
+            col_name = f.split(' > ')[0]
+            filter_value = f.split(' > ')[1]
+            dff = dff.loc[dff[col_name] > filter_value]
+        elif ' < ' in f:
+            col_name = f.split(' < ')[0]
+            filter_value = f.split(' < ')[1]
+            dff = dff.loc[dff[col_name] < filter_value]
+    
+    if len(sort_s):
+        dff = dff.sort_values(
+            by=[col['column_id'] for col in sort_s],
+            ascending=[col['direction'] == 'asc' for col in sort_s],
+            inplace=False
+        )
+
+    startP = page_s['current_page'] * page_s['page_size']
+    endP = (page_s['current_page'] + 1) * page_s['page_size']
+
+    return dff.iloc[startP:endP].to_dict('rows')
 
 
 print('Summaries finish execution')
