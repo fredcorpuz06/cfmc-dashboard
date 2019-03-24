@@ -27,7 +27,6 @@ markupsafe==1.1.0
 mccabe==0.6.1
 nbformat==4.4.0
 numpy==1.16.2
-openssl==1.1.1b
 pandas==0.24.1
 pip==19.0.3
 plotly==3.6.1
