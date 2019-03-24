@@ -38,17 +38,78 @@ pg = graphers.PlotlyGrapher()
 dm = data_managers.DataMunger(SUMMARY_TYPES)
 
 
-layout = html.Div(children=[
-    html.H1(
-        children='Hello Dash'
-    ),
+# layout = html.Div(children=[
+#     html.H1(
+#         children='Hello Dash'
+#     ),
 
+#     html.Div(
+#         children='''Dash: A web application framework for Python.'''
+#     ),
+
+# ])
+
+layout = [
     html.Div(
-        children='''Dash: A web application framework for Python.'''
+        [
+            html.Div(
+                dcc.RangeSlider(
+                    id='yearRange',
+                    min=YEARS.min(),
+                    max=YEARS.max(),
+                    marks={y: str(y) for y in YEARS},
+                    step=1,
+                    value=[YEARS.min(), YEARS.max()]
+                ),
+                style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
+            ),
+            
+            html.Div(
+                dcc.Dropdown(
+                    id="summaryType",
+                    options=[{'label': s, 'value': s} for s in SUMMARY_TYPES],
+                    value=SUMMARY_TYPES[0],
+                    clearable=False,
+                ),
+                className="two columns",
+            ),
+            html.Div(
+                dcc.Dropdown(
+                    id="varChoice1",
+                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+                    value=VAR_CHOICES[0],
+                    clearable=False,
+                ),
+                className="two columns",
+            ),
+            html.Div(
+                dcc.Dropdown(
+                    id="varChoice2",
+                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+                    value=VAR_CHOICES[1],
+                    clearable=False,
+                ),
+                className="two columns",
+            ),
+
+            # add button
+            html.Div(
+                html.Span(
+                    "Add new",
+                    id="button1",
+                    n_clicks=0,
+                    className="button button--primary add",
+                    
+                ),
+                className="two columns",
+                style={"float": "right"},
+            ),
+        ],
+        className="row",
+        style={},
     ),
 
-])
-
+]
     
 # layout = [
 #     # top controls
