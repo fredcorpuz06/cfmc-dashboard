@@ -38,21 +38,6 @@ pg = graphers.PlotlyGrapher()
 dm = data_managers.DataMunger(SUMMARY_TYPES)
 
 
-# General functions
-def global_subset(yearRange, varChoice1, varChoice2):
-    '''Filter to years in range and select variables of interest.'''
-    if varChoice1 == 'fund_type':
-        df = funds
-    else:
-        df = grants
-
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    dff = dff[[varChoice1, varChoice2, 'grant_damt']]
-
-    return dff
-
-# Graphs
-
     
 layout = [
     # top controls
@@ -217,6 +202,15 @@ def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
         'target': rez_all.target.tolist(),
         'value': rez_all[summaryType].tolist(),
         'label': list(sorted(myMap.keys())),
+
+    }
+    print(flows)
+
+    flows = {
+        'source': [0,1,0,2,3,3],
+        'target': [2,3,3,4,4,5],
+        'value': [8,4,2,8,4,2],
+        'label': ["A1", "A2", "B1", "B2", "C1", "C2"],
 
     }
 
