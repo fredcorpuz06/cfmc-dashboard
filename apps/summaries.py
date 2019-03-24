@@ -200,43 +200,15 @@ layout = [
     ]
 )
 def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
-    df = funds
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    # if varChoice1 == varChoice2:
-    dff = dff[['fund_type', varChoice1, varChoice2, 'fund_damt']]
-
-    # dff = dm.getYearVars(funds, yearRange, varChoice1, varChoice2)
-    g = dff.groupby(['fund_type', varChoice1, varChoice2])
-    rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
-        'sum': SUMMARY_TYPES[0],
-        '<lambda>': SUMMARY_TYPES[1],
-        'mean': SUMMARY_TYPES[2]
-    })['fund_damt'].reset_index()
-
-    rez01 = rez[['fund_type', varChoice1] + SUMMARY_TYPES].rename(columns={
-        'fund_type': 'source',
-        varChoice1: 'target'
-    })
-    rez01['target'] = rez01.target + '0'
-
-    rez12 = rez[[varChoice1, varChoice2] + SUMMARY_TYPES].rename(columns={
-        varChoice1: 'source',
-        varChoice2: 'target'
-    })
-    rez12['source'] = rez12.source + '0'
+    myVar = 'fund_damt'
+    if varChoice1 == varChoice2:
+        aggVars = ['fund_type', varChoice1]
+    else: 
+        aggVars = ['fund_type', varChoice1, varChoice2]
     
-    rez_all = rez01.append(rez12, ignore_index=True)
-    
-
-    source_nodes = rez_all.source.tolist()
-    target_nodes = rez_all.target.tolist()
-    all_nodes = set(source_nodes + target_nodes)
-
-    myMap = {}
-    for i, n in enumerate(sorted(all_nodes)):
-        myMap[n] = i
-
-    rez_all = rez_all.replace(myMap)
+    dff = dm.get_year_vars(funds, yearRange, myVar, aggVars)      
+    rez = dm.create_summaries(dff, myVar, aggVars).reset_index()
+    rez_all, myMap = dm.sankey_manipulations(rez, aggVars)
     # print(rez_all)
 
     flows = {
@@ -258,9 +230,10 @@ def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
     ]
 )
 def overallBar_callback(yearRange, summaryType, varChoice1):
-    dff = dm.getYearVars(funds, yearRange, varChoice1)
-    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1])
-    
+    myVar = 'grant_damt'
+    aggVars = [varChoice1]
+    dff = dm.get_year_vars(grants, yearRange, myVar, aggVars) 
+    rez = dm.create_summaries(dff, myVar, aggVars)
     # Format data for bar graph
     bars =[{
         'name': varChoice1,
@@ -279,10 +252,12 @@ def overallBar_callback(yearRange, summaryType, varChoice1):
     ]
 )
 def overallTime_callback(yearRange, summaryType, varChoice1):
-    dff = dm.getYearVars(funds, yearRange, varChoice1, 'year')
-    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1, 'year'])
+    myVar = 'grant_damt'
+    aggVars = [varChoice1, 'year']
+    dff = dm.get_year_vars(grants, yearRange, myVar, aggVars) 
+    rez = dm.create_summaries(dff, myVar, aggVars)
 
-    print(rez)
+    # print(rez)
     times = []
     for name, group in rez.groupby(level=0):
         bar = {
@@ -291,7 +266,7 @@ def overallTime_callback(yearRange, summaryType, varChoice1):
             'value': group[summaryType].tolist(),
         }
         times.append(bar)
-    print(times)
+    # print(times)
 
     return pg.time_line(times)
 
@@ -307,27 +282,34 @@ def overallTime_callback(yearRange, summaryType, varChoice1):
 )
 
 def grantsTable_callback(page_s, sort_s, filter_s):
-    filter_exps = filter_s.split(' && ')
-            col_name = f.split(' eq ')[0]
-            dff = dff.loc[dff[col_name] == filter_value]
-        elif ' > ' in f:
-            col_name = f.split(' > ')[0]
-            filter_value = f.split(' > ')[1]
-            dff = dff.loc[dff[col_name] > filter_value]
-        elif ' < ' in f:
-            col_name = f.split(' < ')[0]
-            filter_value = f.split(' < ')[1]
-            dff = dff.loc[dff[col_name] < filter_value]
+    dff = grants
     
-    if len(sort_s):
-        dff = dff.sort_values(
-            by=[col['column_id'] for col in sort_s],
-            ascending=[col['direction'] == 'asc' for col in sort_s],
-            inplace=False
-        )
+    # filter_exps = filter_s.split(' && ')
+    # for f in filter_exps:
+    #     if ' eq ' in f:
+    #         col_name = f.split(' eq ')[0]
+    #         filter_value = f.split(' eq ')[1]
+    #         dff = dff.loc[dff[col_name] == filter_value]
+    #     elif ' > ' in f:
+    #         col_name = f.split(' > ')[0]
+    #         filter_value = f.split(' > ')[1]
+    #         dff = dff.loc[dff[col_name] > filter_value]
+    #     elif ' < ' in f:
+    #         col_name = f.split(' < ')[0]
+    #         filter_value = f.split(' < ')[1]
+    #         dff = dff.loc[dff[col_name] < filter_value]
+    
+    # if len(sort_s):
+    #     dff = dff.sort_values(
+    #         by=[col['column_id'] for col in sort_s],
+    #         ascending=[col['direction'] == 'asc' for col in sort_s],
+    #         inplace=False
+    #     ) 
 
     startP = page_s['current_page'] * page_s['page_size']
     endP = (page_s['current_page'] + 1) * page_s['page_size']
 
-    return dff.iloc[startP:endP].to_dict('rows')
+    dff = dff.iloc[startP:endP]
+
+    return dff.to_dict('rows')
 
