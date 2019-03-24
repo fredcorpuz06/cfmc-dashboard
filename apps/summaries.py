@@ -16,12 +16,12 @@ colors = {"background": "#F3F6FA", "background_div": "white"}
 
 
 # Data 
-# grants = pd.read_csv("./data/grants_clean.csv")
-# funds = pd.read_csv("./data/funds_clean.csv")
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-grants = pd.read_sql_query("SELECT * FROM grants;", conn)
-funds = pd.read_sql_query("SELECT * FROM funds;", conn)
+grants = pd.read_csv("./data/grants_clean.csv")
+funds = pd.read_csv("./data/funds_clean.csv")
+# DATABASE_URL = os.environ['DATABASE_URL']
+# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+# grants = pd.read_sql_query("SELECT * FROM grants;", conn)
+# funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
 print(grants.head())
 print(funds.head())
@@ -172,11 +172,11 @@ layout = [
                         'page_size': PAGE_SIZE
                     },
                     pagination_mode='be',
-                    filtering='be',
-                    filtering_settings='',
-                    sorting='be',
-                    sorting_type='multi',
-                    sorting_settings=[],
+                    # filtering='be',
+                    # filtering_settings='',
+                    # sorting='be',
+                    # sorting_type='multi',
+                    # sorting_settings=[],
 
                     style_data={'whiteSpace': 'normal'},
                     css=[{
@@ -277,12 +277,13 @@ def overallTime_callback(yearRange, summaryType, varChoice1):
     Output('grantsTable', 'data'),
     [
         Input('grantsTable', 'pagination_settings'),
-        Input('grantsTable', 'sorting_settings'),
-        Input('grantsTable', 'filtering_settings'),
+        # Input('grantsTable', 'sorting_settings'),
+        # Input('grantsTable', 'filtering_settings'),
     ]
 )
 
-def grantsTable_callback(page_s, sort_s, filter_s):
+# def grantsTable_callback(page_s, sort_s, filter_s):
+def grantsTable_callback(page_s):
     dff = grants
     
     # filter_exps = filter_s.split(' && ')

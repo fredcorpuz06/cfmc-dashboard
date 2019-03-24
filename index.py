@@ -38,7 +38,7 @@ app.layout = html.Div(
                         dcc.Tab(label='Fruits Sample', value='fruits_tab'),
 
                     ],
-                    value='fruits_tab',
+                    value='summaries_tab',
                 )
             ], 
             className='row tabs_div'
