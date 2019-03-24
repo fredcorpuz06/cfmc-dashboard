@@ -45,27 +45,10 @@ app.layout = html.Div(
         html.Div(id="tab_content", className="row", style={"margin": "2% 3%"}),
 
         
-        # CSS files 
-        # html.Link(href="https://use.fontawesome.com/releases/v5.2.0/css/all.css",rel="stylesheet"),
-        # html.Link(href="https://fonts.googleapis.com/css?family=Dosis", rel="stylesheet"),
-        # html.Link(href="https://fonts.googleapis.com/css?family=Open+Sans", rel="stylesheet"),
-        # html.Link(href="https://fonts.googleapis.com/css?family=Ubuntu", rel="stylesheet"),
-        # html.Link(href="https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css",rel="stylesheet"),
-        # html.Link(href="https://cdn.rawgit.com/amadoukane96/8a8cfdac5d2cecad866952c52a70a50e/raw/cd5a9bf0b30856f4fc7e3812162c74bfc0ebe011/dash_crm.css", rel="stylesheet")
-        
     ],
     className="row",
     style={"margin": "0%"},
 )
-
-# external_css = ["https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css",
-#                 "https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
-#                 "//fonts.googleapis.com/css?family=Raleway:400,300,600",
-#                 "https://codepen.io/bcd/pen/KQrXdb.css",
-#                 "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"]
-
-# for css in external_css:
-#     app.css.append_css({"external_url": css})
 
 
 @app.callback(
