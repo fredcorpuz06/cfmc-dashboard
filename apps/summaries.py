@@ -16,17 +16,16 @@ colors = {"background": "#F3F6FA", "background_div": "white"}
 
 
 # Data 
-grants = pd.read_csv("./data/grants_clean.csv")
-funds = pd.read_csv("./data/funds_clean.csv")
-# DATABASE_URL = os.environ['DATABASE_URL']
-# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-# grants = pd.read_sql_query("SELECT * FROM grants;", conn)
-# funds = pd.read_sql_query("SELECT * FROM funds;", conn)
+# grants = pd.read_csv("./data/grants_clean.csv")
+# funds = pd.read_csv("./data/funds_clean.csv")
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+grants = pd.read_sql_query("SELECT * FROM grants;", conn)
+funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
 
 YEARS = grants.year.unique().astype(int)
 SUMMARY_TYPES = ['gross_total', 'count', 'ave_amt']
-# var_choices = ['fund_type', 'project_impact', 'org_impact', 'region']
 VAR_CHOICES = ['project_impact', 'org_impact', 'region']
 
 PAGE_SIZE = 15
