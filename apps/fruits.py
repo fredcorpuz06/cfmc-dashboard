@@ -5,16 +5,16 @@ import plotly.graph_objs as go
 import psycopg2
 import os
 
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-cur = conn.cursor()
-cur.execute("SELECT region FROM funds")
-fund_region = cur.fetchall()
-cur.execute("SELECT region FROM grants")
-grant_region =cur.fetchall()
+# DATABASE_URL = os.environ['DATABASE_URL']
+# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+# cur = conn.cursor()
+# cur.execute("SELECT region FROM funds")
+# fund_region = cur.fetchall()
+# cur.execute("SELECT region FROM grants")
+# grant_region =cur.fetchall()
 
-print(fund_region)
-print(grant_region)
+# print(fund_region)
+# print(grant_region)
 
 from app import app, indicator
 

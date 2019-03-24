@@ -70,7 +70,6 @@ def render_content(tab):
     else:
         return fruits.layout
 
-
 if __name__ == '__main__':
     app.run_server(debug=True)
     # , dev_tools_hot_reload=False
