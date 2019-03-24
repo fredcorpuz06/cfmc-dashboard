@@ -61,7 +61,7 @@ app.layout = html.Div(
 )
 def render_content(tab):
     if tab == 'summaries_tab':
-        return summaries.layout
+        return fruits.layout
     elif tab == 'trends_tab':
         return trends.layout
     elif tab == 'fruits_tab':
