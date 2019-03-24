@@ -16,7 +16,7 @@ import os
 # print(fund_region)
 # print(grant_region)
 
-from app import app, indicator
+from app import app
 
 layout = html.Div(children=[
     html.H1(
