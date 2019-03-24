@@ -6,8 +6,8 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
 from app import app, server
-# from apps import summaries, trends, fruits
-from apps import trends, fruits
+from apps import summaries, trends, fruits
+
 
 
 app.layout = html.Div(
@@ -62,7 +62,7 @@ app.layout = html.Div(
 )
 def render_content(tab):
     if tab == 'summaries_tab':
-        return fruits.layout
+        return summaries.layout
     elif tab == 'trends_tab':
         return trends.layout
     elif tab == 'fruits_tab':

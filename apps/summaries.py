@@ -23,6 +23,8 @@ conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 grants = pd.read_sql_query("SELECT * FROM grants;", conn)
 funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
+print(grants.head())
+print(funds.head())
 
 YEARS = grants.year.unique().astype(int)
 SUMMARY_TYPES = ['gross_total', 'count', 'ave_amt']

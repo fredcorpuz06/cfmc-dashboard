@@ -24,10 +24,10 @@ cur.execute('SELECT value FROM forluck;')
 value = cur.fetchall()
 value = [v[0] for v in value]
 
-print('Without pandas:', label, value)
+# print('Without pandas:', label, value)
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 forluck = pd.read_sql_query("SELECT * FROM forluck;", conn)
-print('With pandas:', forluck.label, forluck.value)
+# print('With pandas:', forluck.label, forluck.value)
 
 from app import app
 
