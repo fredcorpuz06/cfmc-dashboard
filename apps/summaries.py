@@ -10,12 +10,10 @@ import psycopg2
 
 
 from app import app, indicator
-from app_utils import graphers
+from app_utils import graphers, data_managers
 colors = {"background": "#F3F6FA", "background_div": "white"}
 
 
-# Utils
-pg = graphers.PlotlyGrapher()
 
 # Data 
 grants = pd.read_csv("./data/grants_clean.csv")
@@ -32,6 +30,12 @@ SUMMARY_TYPES = ['gross_total', 'count', 'ave_amt']
 VAR_CHOICES = ['project_impact', 'org_impact', 'region']
 
 PAGE_SIZE = 15
+
+
+# Utils
+pg = graphers.PlotlyGrapher()
+dm = data_managers.DataMunger(SUMMARY_TYPES)
+
 
 # General functions
 def global_subset(yearRange, varChoice1, varChoice2):
@@ -87,7 +91,7 @@ layout = [
                 dcc.Dropdown(
                     id="varChoice2",
                     options=[{'label': v, 'value': v} for v in VAR_CHOICES],
-                    value=VAR_CHOICES[3],
+                    value=VAR_CHOICES[1],
                     clearable=False,
                 ),
                 className="two columns",
@@ -133,7 +137,7 @@ layout = [
             html.Div([
                 html.P('Breakdown overall'),
                 dcc.Graph(
-                    id='singleVarTime',
+                    id='overallBar',
                     config=dict(displayModeBar=False),
                     style={'height': '89%', 'width': '98%'}
                 ),
@@ -143,7 +147,7 @@ layout = [
             html.Div([
                 html.P('Breakdown over time'),
                 dcc.Graph(
-                    id='singleVarHist',
+                    id='overallTime',
                     config=dict(displayModeBar=False),
                     style={'height': '89%', 'width': '98%'}
                 ),
@@ -198,8 +202,10 @@ layout = [
 def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
     df = funds
     dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
+    # if varChoice1 == varChoice2:
     dff = dff[['fund_type', varChoice1, varChoice2, 'fund_damt']]
 
+    # dff = dm.getYearVars(funds, yearRange, varChoice1, varChoice2)
     g = dff.groupby(['fund_type', varChoice1, varChoice2])
     rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
         'sum': SUMMARY_TYPES[0],
@@ -211,14 +217,16 @@ def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
         'fund_type': 'source',
         varChoice1: 'target'
     })
+    rez01['target'] = rez01.target + '0'
+
     rez12 = rez[[varChoice1, varChoice2] + SUMMARY_TYPES].rename(columns={
         varChoice1: 'source',
         varChoice2: 'target'
     })
-
+    rez12['source'] = rez12.source + '0'
+    
     rez_all = rez01.append(rez12, ignore_index=True)
-    rez_all['source'] = rez_all.source + '0'
-    rez_all['target'] = rez_all.target + '1'
+    
 
     source_nodes = rez_all.source.tolist()
     target_nodes = rez_all.target.tolist()
@@ -242,28 +250,16 @@ def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
     return pg.sankey_diag(flows)
 
 @app.callback(
-    Output('singleVarTime', 'figure'),
+    Output('overallBar', 'figure'),
     [
         Input('yearRange', 'value'),
         Input('summaryType', 'value'),
         Input('varChoice1', 'value'),
     ]
 )
-def singleVarTime_callback(yearRange, summaryType, varChoice1):
-    df = funds
-
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    dff = dff[[varChoice1, varChoice2, 'grant_damt']]
-
-    # Summarize by 1
-    
-    g = dff.groupby(varChoice1)
-    
-    rez = g.agg([np.sum, lambda x: np.shape(x)[0]], np.mean).rename(columns={
-                'sum': SUMMARY_TYPES[0],
-                '<lambda>': SUMMARY_TYPES[1],
-                'mean': SUMMARY_TYPES[2],
-            })['grant_damt']
+def overallBar_callback(yearRange, summaryType, varChoice1):
+    dff = dm.getYearVars(funds, yearRange, varChoice1)
+    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1])
     
     # Format data for bar graph
     bars =[{
@@ -275,26 +271,18 @@ def singleVarTime_callback(yearRange, summaryType, varChoice1):
     return pg.bar_chart(bars)
 
 @app.callback(
-    Output('singleVarHist', 'figure'),
+    Output('overallTime', 'figure'),
     [
         Input('yearRange', 'value'),
         Input('summaryType', 'value'),
         Input('varChoice1', 'value'),
     ]
 )
-def singleVarHist_callback(yearRange, summaryType, varChoice1):
-    df = funds
+def overallTime_callback(yearRange, summaryType, varChoice1):
+    dff = dm.getYearVars(funds, yearRange, varChoice1, 'year')
+    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1, 'year'])
 
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    dff = dff[['year', varChoice1, 'grant_damt']]
-
-    g = dff.groupby([varChoice1, 'year'])
-    rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
-            'sum': SUMMARY_TYPES[0],
-            '<lambda>': SUMMARY_TYPES[1],
-            'mean': SUMMARY_TYPES[2],
-        })['grant_damt']
-
+    print(rez)
     times = []
     for name, group in rez.groupby(level=0):
         bar = {
@@ -303,7 +291,7 @@ def singleVarHist_callback(yearRange, summaryType, varChoice1):
             'value': group[summaryType].tolist(),
         }
         times.append(bar)
-
+    print(times)
 
     return pg.time_line(times)
 
@@ -320,7 +308,7 @@ def singleVarHist_callback(yearRange, summaryType, varChoice1):
 
 def grantsTable_callback(page_s, sort_s, filter_s):
     filter_exps = filter_s.split(' && ')
-    dff = df
+    dff = grants
     for f in filter_exps:
         if ' eq ' in f:
             col_name = f.split(' eq ')[0]
