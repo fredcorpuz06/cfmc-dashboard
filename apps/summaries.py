@@ -10,12 +10,10 @@ import psycopg2
 
 
 from app import app, indicator
-from app_utils import graphers
+from app_utils import graphers, data_managers
 colors = {"background": "#F3F6FA", "background_div": "white"}
 
 
-# Utils
-pg = graphers.PlotlyGrapher()
 
 # Data 
 grants = pd.read_csv("./data/grants_clean.csv")
@@ -25,12 +23,19 @@ funds = pd.read_csv("./data/funds_clean.csv")
 # grants = pd.read_sql_query("SELECT * FROM grants;", conn)
 # funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 
-df = grants
 
-years = grants.year.unique().astype(int)
-summary_types = ['gross_total', 'count', 'ave_amt']
-var_choices = ['fund_type', 'project_impact', 'org_impact', 'region']
+YEARS = grants.year.unique().astype(int)
+SUMMARY_TYPES = ['gross_total', 'count', 'ave_amt']
+# var_choices = ['fund_type', 'project_impact', 'org_impact', 'region']
+VAR_CHOICES = ['project_impact', 'org_impact', 'region']
+
 PAGE_SIZE = 15
+
+
+# Utils
+pg = graphers.PlotlyGrapher()
+dm = data_managers.DataMunger(SUMMARY_TYPES)
+
 
 # General functions
 def global_subset(yearRange, varChoice1, varChoice2):
@@ -55,12 +60,11 @@ layout = [
             html.Div(
                 dcc.RangeSlider(
                     id='yearRange',
-                    min=years.min(),
-                    max=years.max(),
-                    marks={i: str(i) for i in years},
+                    min=YEARS.min(),
+                    max=YEARS.max(),
+                    marks={y: str(y) for y in YEARS},
                     step=1,
-                    # value=[years.min(), years.max()]
-                    value=[2008, 2015]
+                    value=[YEARS.min(), YEARS.max()]
                 ),
                 style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
             ),
@@ -68,12 +72,8 @@ layout = [
             html.Div(
                 dcc.Dropdown(
                     id="summaryType",
-                    options=[
-                        {"label": summary_types[0], "value": summary_types[0]},
-                        {"label": summary_types[1], "value": summary_types[1]},
-                        {"label": summary_types[2], "value": summary_types[2]},
-                    ],
-                    value=summary_types[0],
+                    options=[{'label': s, 'value': s} for s in SUMMARY_TYPES],
+                    value=SUMMARY_TYPES[0],
                     clearable=False,
                 ),
                 className="two columns",
@@ -81,13 +81,8 @@ layout = [
             html.Div(
                 dcc.Dropdown(
                     id="varChoice1",
-                    options=[
-                        {"label": var_choices[0], "value": var_choices[0]},
-                        {"label": var_choices[1], "value": var_choices[1]},
-                        {"label": var_choices[2], "value": var_choices[2]},
-                        {"label": var_choices[3], "value": var_choices[3]},
-                    ],
-                    value=var_choices[1],
+                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+                    value=VAR_CHOICES[0],
                     clearable=False,
                 ),
                 className="two columns",
@@ -95,13 +90,8 @@ layout = [
             html.Div(
                 dcc.Dropdown(
                     id="varChoice2",
-                    options=[
-                        {"label": var_choices[0], "value": var_choices[0]},
-                        {"label": var_choices[1], "value": var_choices[1]},
-                        {"label": var_choices[2], "value": var_choices[2]},
-                        {"label": var_choices[3], "value": var_choices[3]},
-                    ],
-                    value=var_choices[3],
+                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+                    value=VAR_CHOICES[1],
                     clearable=False,
                 ),
                 className="two columns",
@@ -123,28 +113,6 @@ layout = [
         className="row",
         style={},
     ),
-    # indicators 
-    html.Div(
-        [
-            indicator(
-                "#00cc96",
-                "Low priority cases",
-                "left_cases_indicator",
-            ),
-            indicator(
-                "#119DFF",
-                "Medium priority cases",
-                "middle_cases_indicator",
-            ),
-            indicator(
-                "#EF553B",
-                "High priority cases",
-                "right_cases_indicator",
-            ),
-        ],
-        className="row",
-    ),
-
     # first row graphs
     html.Div(
         [
@@ -169,7 +137,7 @@ layout = [
             html.Div([
                 html.P('Breakdown overall'),
                 dcc.Graph(
-                    id='singleVarBar',
+                    id='overallBar',
                     config=dict(displayModeBar=False),
                     style={'height': '89%', 'width': '98%'}
                 ),
@@ -179,7 +147,7 @@ layout = [
             html.Div([
                 html.P('Breakdown over time'),
                 dcc.Graph(
-                    id='singleVarHist',
+                    id='overallTime',
                     config=dict(displayModeBar=False),
                     style={'height': '89%', 'width': '98%'}
                 ),
@@ -197,7 +165,7 @@ layout = [
                 html.P('Top 5 grant recepients'),
                 dash_table.DataTable(
                     id='grantsTable',
-                    columns=[{"name": i, "id": i} for i in df.columns],
+                    columns=[{"name": i, "id": i} for i in grants.columns],
                     pagination_settings={
                         'current_page': 0,
                         'page_size': PAGE_SIZE
@@ -221,37 +189,6 @@ layout = [
 
 ]
 
-# indicator interactions
-@app.callback(
-    Output("left_cases_indicator", "children"),
-    [
-        Input('varChoice1', 'value'),
-    ]
-)
-def left_cases_indicator_callback(df):
-    return 1
-
-
-@app.callback(
-    Output("middle_cases_indicator", "children"), 
-    [
-        Input('varChoice1', 'value'),
-    ]
-)
-def middle_cases_indicator_callback(df):
-    return 2
-
-
-@app.callback(
-    Output("right_cases_indicator", "children"), 
-    [
-        Input('varChoice1', 'value'),
-
-    ]
-)
-def right_cases_indicator_callback(df):
-    return 3
-
 # graph interactions
 @app.callback(
     Output('sankey', 'figure'),
@@ -262,31 +199,35 @@ def right_cases_indicator_callback(df):
         Input('varChoice2', 'value')
     ]
 )
-def graph1_callback(yearRange, summaryType, varChoice1, varChoice2):
-    
+def sankey_callback(yearRange, summaryType, varChoice1, varChoice2):
     df = funds
     dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
+    # if varChoice1 == varChoice2:
     dff = dff[['fund_type', varChoice1, varChoice2, 'fund_damt']]
 
+    # dff = dm.getYearVars(funds, yearRange, varChoice1, varChoice2)
     g = dff.groupby(['fund_type', varChoice1, varChoice2])
     rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
-        'sum': summary_types[0],
-        '<lambda>': summary_types[1],
-        'mean': summary_types[2]
+        'sum': SUMMARY_TYPES[0],
+        '<lambda>': SUMMARY_TYPES[1],
+        'mean': SUMMARY_TYPES[2]
     })['fund_damt'].reset_index()
 
-    rez01 = rez[['fund_type', varChoice1] + summary_types].rename(columns={
+    rez01 = rez[['fund_type', varChoice1] + SUMMARY_TYPES].rename(columns={
         'fund_type': 'source',
         varChoice1: 'target'
-    }
-    )
-    rez12 = rez[[varChoice1, varChoice2] + summary_types].rename(columns={
+    })
+    rez01['target'] = rez01.target + '0'
+
+    rez12 = rez[[varChoice1, varChoice2] + SUMMARY_TYPES].rename(columns={
         varChoice1: 'source',
         varChoice2: 'target'
     })
-
+    rez12['source'] = rez12.source + '0'
+    
     rez_all = rez01.append(rez12, ignore_index=True)
-    # rez_all = rez01
+    
+
     source_nodes = rez_all.source.tolist()
     target_nodes = rez_all.target.tolist()
     all_nodes = set(source_nodes + target_nodes)
@@ -309,44 +250,17 @@ def graph1_callback(yearRange, summaryType, varChoice1, varChoice2):
     return pg.sankey_diag(flows)
 
 @app.callback(
-    Output('singleVarPie', 'figure'),
-    [
-        Input('varChoice1', 'value'),
-        Input('summaryType', 'value'),
-    ]
-)
-def graph2_callback(c1, c2):
-    return pg.pie_chart()
-
-@app.callback(
-    Output('singleVarBar', 'figure'),
+    Output('overallBar', 'figure'),
     [
         Input('yearRange', 'value'),
         Input('summaryType', 'value'),
         Input('varChoice1', 'value'),
-        Input('varChoice2', 'value')
     ]
 )
-def singleVarBar_callback(yearRange, summaryType, varChoice1, varChoice2):
-    # doesn't allow for same varChoice, and not doing funds properly
-    if varChoice1 == 'fund_type':
-        df = funds
-    else:
-        df = grants
-
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    dff = dff[[varChoice1, varChoice2, 'grant_damt']]
-
-    # Summarize by 1
+def overallBar_callback(yearRange, summaryType, varChoice1):
+    dff = dm.getYearVars(funds, yearRange, varChoice1)
+    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1])
     
-    g = dff.groupby(varChoice1)
-    
-    rez = g.agg([np.sum, lambda x: np.shape(x)[0]], np.mean).rename(columns={
-                'sum': summary_types[0],
-                '<lambda>': summary_types[1],
-                'mean': summary_types[2],
-            })['grant_damt']
-    # print(rez)
     # Format data for bar graph
     bars =[{
         'name': varChoice1,
@@ -354,33 +268,21 @@ def singleVarBar_callback(yearRange, summaryType, varChoice1, varChoice2):
         'value': rez[summaryType].tolist()
     }]           
     
-    # print(bars)
     return pg.bar_chart(bars)
 
 @app.callback(
-    Output('singleVarHist', 'figure'),
+    Output('overallTime', 'figure'),
     [
         Input('yearRange', 'value'),
         Input('summaryType', 'value'),
         Input('varChoice1', 'value'),
     ]
 )
-def graph4_callback(yearRange, summaryType, varChoice1):
-    if varChoice1 == 'fund_type':
-        df = funds
-    else:
-        df = grants
+def overallTime_callback(yearRange, summaryType, varChoice1):
+    dff = dm.getYearVars(funds, yearRange, varChoice1, 'year')
+    rez = dm.create_summaries(dff, 'grant_damt', [varChoice1, 'year'])
 
-    dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
-    dff = dff[['year', varChoice1, 'grant_damt']]
-
-    g = dff.groupby([varChoice1, 'year'])
-    rez = g.agg([np.sum, lambda x: np.shape(x)[0], np.mean]).rename(columns={
-            'sum': summary_types[0],
-            '<lambda>': summary_types[1],
-            'mean': summary_types[2],
-        })['grant_damt']
-
+    print(rez)
     times = []
     for name, group in rez.groupby(level=0):
         bar = {
@@ -389,7 +291,7 @@ def graph4_callback(yearRange, summaryType, varChoice1):
             'value': group[summaryType].tolist(),
         }
         times.append(bar)
-
+    print(times)
 
     return pg.time_line(times)
 
@@ -406,11 +308,7 @@ def graph4_callback(yearRange, summaryType, varChoice1):
 
 def grantsTable_callback(page_s, sort_s, filter_s):
     filter_exps = filter_s.split(' && ')
-    dff = df
-    for f in filter_exps:
-        if ' eq ' in f:
             col_name = f.split(' eq ')[0]
-            filter_value = f.split(' eq ')[1]
             dff = dff.loc[dff[col_name] == filter_value]
         elif ' > ' in f:
             col_name = f.split(' > ')[0]
