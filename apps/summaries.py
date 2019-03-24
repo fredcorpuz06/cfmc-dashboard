@@ -38,142 +38,153 @@ pg = graphers.PlotlyGrapher()
 dm = data_managers.DataMunger(SUMMARY_TYPES)
 
 
+layout = html.Div(children=[
+    html.H1(
+        children='Hello Dash'
+    ),
+
+    html.Div(
+        children='''Dash: A web application framework for Python.'''
+    ),
+
+])
+
     
-layout = [
-    # top controls
-    html.Div(
-        [
-            html.Div(
-                dcc.RangeSlider(
-                    id='yearRange',
-                    min=YEARS.min(),
-                    max=YEARS.max(),
-                    marks={y: str(y) for y in YEARS},
-                    step=1,
-                    value=[YEARS.min(), YEARS.max()]
-                ),
-                style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
-            ),
+# layout = [
+#     # top controls
+#     html.Div(
+#         [
+#             html.Div(
+#                 dcc.RangeSlider(
+#                     id='yearRange',
+#                     min=YEARS.min(),
+#                     max=YEARS.max(),
+#                     marks={y: str(y) for y in YEARS},
+#                     step=1,
+#                     value=[YEARS.min(), YEARS.max()]
+#                 ),
+#                 style={'width': '90%', 'padding': '0px 20px 20px 20px', 'display': 'inline-block'}
+#             ),
             
-            html.Div(
-                dcc.Dropdown(
-                    id="summaryType",
-                    options=[{'label': s, 'value': s} for s in SUMMARY_TYPES],
-                    value=SUMMARY_TYPES[0],
-                    clearable=False,
-                ),
-                className="two columns",
-            ),
-            html.Div(
-                dcc.Dropdown(
-                    id="varChoice1",
-                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
-                    value=VAR_CHOICES[0],
-                    clearable=False,
-                ),
-                className="two columns",
-            ),
-            html.Div(
-                dcc.Dropdown(
-                    id="varChoice2",
-                    options=[{'label': v, 'value': v} for v in VAR_CHOICES],
-                    value=VAR_CHOICES[1],
-                    clearable=False,
-                ),
-                className="two columns",
-            ),
+#             html.Div(
+#                 dcc.Dropdown(
+#                     id="summaryType",
+#                     options=[{'label': s, 'value': s} for s in SUMMARY_TYPES],
+#                     value=SUMMARY_TYPES[0],
+#                     clearable=False,
+#                 ),
+#                 className="two columns",
+#             ),
+#             html.Div(
+#                 dcc.Dropdown(
+#                     id="varChoice1",
+#                     options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+#                     value=VAR_CHOICES[0],
+#                     clearable=False,
+#                 ),
+#                 className="two columns",
+#             ),
+#             html.Div(
+#                 dcc.Dropdown(
+#                     id="varChoice2",
+#                     options=[{'label': v, 'value': v} for v in VAR_CHOICES],
+#                     value=VAR_CHOICES[1],
+#                     clearable=False,
+#                 ),
+#                 className="two columns",
+#             ),
 
-            # add button
-            html.Div(
-                html.Span(
-                    "Add new",
-                    id="button1",
-                    n_clicks=0,
-                    className="button button--primary add",
+#             # add button
+#             html.Div(
+#                 html.Span(
+#                     "Add new",
+#                     id="button1",
+#                     n_clicks=0,
+#                     className="button button--primary add",
                     
-                ),
-                className="two columns",
-                style={"float": "right"},
-            ),
-        ],
-        className="row",
-        style={},
-    ),
-    # first row graphs
-    html.Div(
-        [
-            html.Div([
-                html.P('Flow of funds to projects'),
-                dcc.Graph(
-                    id='sankey',
-                    config=dict(displayModeBar=False),
-                    style={'height': '89%', 'width': '98%'}
-                ),
-            ],
-            className="twelve columns chart_div",
-            style={"height": 700}),    
-        ],
-        className='row',
-        style={'marginTop': '5px'}
-    ),
+#                 ),
+#                 className="two columns",
+#                 style={"float": "right"},
+#             ),
+#         ],
+#         className="row",
+#         style={},
+#     ),
+#     # first row graphs
+#     html.Div(
+#         [
+#             html.Div([
+#                 html.P('Flow of funds to projects'),
+#                 dcc.Graph(
+#                     id='sankey',
+#                     config=dict(displayModeBar=False),
+#                     style={'height': '89%', 'width': '98%'}
+#                 ),
+#             ],
+#             className="twelve columns chart_div",
+#             style={"height": 700}),    
+#         ],
+#         className='row',
+#         style={'marginTop': '5px'}
+#     ),
 
-    # second row graphs
-    html.Div(
-        [
-            html.Div([
-                html.P('Breakdown overall'),
-                dcc.Graph(
-                    id='overallBar',
-                    config=dict(displayModeBar=False),
-                    style={'height': '89%', 'width': '98%'}
-                ),
-            ],
-            className="six columns chart_div"), 
+#     # second row graphs
+#     html.Div(
+#         [
+#             html.Div([
+#                 html.P('Breakdown overall'),
+#                 dcc.Graph(
+#                     id='overallBar',
+#                     config=dict(displayModeBar=False),
+#                     style={'height': '89%', 'width': '98%'}
+#                 ),
+#             ],
+#             className="six columns chart_div"), 
 
-            html.Div([
-                html.P('Breakdown over time'),
-                dcc.Graph(
-                    id='overallTime',
-                    config=dict(displayModeBar=False),
-                    style={'height': '89%', 'width': '98%'}
-                ),
-            ],
-            className="six columns chart_div"),         
-        ],
-        className='row',
-        style={'marginTop': '5px'}
-    ),
+#             html.Div([
+#                 html.P('Breakdown over time'),
+#                 dcc.Graph(
+#                     id='overallTime',
+#                     config=dict(displayModeBar=False),
+#                     style={'height': '89%', 'width': '98%'}
+#                 ),
+#             ],
+#             className="six columns chart_div"),         
+#         ],
+#         className='row',
+#         style={'marginTop': '5px'}
+#     ),
 
-    # # data table
-    # html.Div(
-    #     [
-    #         html.Div([
-    #             html.P('Top 5 grant recepients'),
-    #             dash_table.DataTable(
-    #                 id='grantsTable',
-    #                 columns=[{"name": i, "id": i} for i in grants.columns],
-    #                 pagination_settings={
-    #                     'current_page': 0,
-    #                     'page_size': PAGE_SIZE
-    #                 },
-    #                 pagination_mode='be',
-    #                 # filtering='be',
-    #                 # filtering_settings='',
-    #                 # sorting='be',
-    #                 # sorting_type='multi',
-    #                 # sorting_settings=[],
+#     # # data table
+#     # html.Div(
+#     #     [
+#     #         html.Div([
+#     #             html.P('Top 5 grant recepients'),
+#     #             dash_table.DataTable(
+#     #                 id='grantsTable',
+#     #                 columns=[{"name": i, "id": i} for i in grants.columns],
+#     #                 pagination_settings={
+#     #                     'current_page': 0,
+#     #                     'page_size': PAGE_SIZE
+#     #                 },
+#     #                 pagination_mode='be',
+#     #                 # filtering='be',
+#     #                 # filtering_settings='',
+#     #                 # sorting='be',
+#     #                 # sorting_type='multi',
+#     #                 # sorting_settings=[],
 
-    #                 style_data={'whiteSpace': 'normal'},
-    #                 css=[{
-    #                     'selector': '.dash-cell div.dash-cell-value',
-    #                     'rule': 'display: inline; white-space: inherit; overflow: inherit; text-overflow: inherit;'
-    #                 }],
-    #             )
-    #        ]) 
-    #     ]
-    # )
+#     #                 style_data={'whiteSpace': 'normal'},
+#     #                 css=[{
+#     #                     'selector': '.dash-cell div.dash-cell-value',
+#     #                     'rule': 'display: inline; white-space: inherit; overflow: inherit; text-overflow: inherit;'
+#     #                 }],
+#     #             )
+#     #        ]) 
+#     #     ]
+#     # )
 
-]
+# ]
 
 # graph interactions
 @app.callback(
