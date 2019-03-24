@@ -6,7 +6,7 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
 from app import app, server
-from apps import summaries, trends
+from apps import summaries, trends, fruits
 
 
 app.layout = html.Div(
@@ -33,9 +33,11 @@ app.layout = html.Div(
                     style={'height':'20', 'verticalAlign':'middle'},
                     children=[
                         dcc.Tab(label='Time Period Summaries', value='summaries_tab'),
-                        dcc.Tab(label='Time Trends', value='trends_tab')
+                        dcc.Tab(label='Time Trends', value='trends_tab'),
+                        dcc.Tab(label='Fruits Sample', value='fruits_tab'),
+
                     ],
-                    value='summaries_tab',
+                    value='fruits_tab',
                 )
             ], 
             className='row tabs_div'
@@ -62,8 +64,10 @@ def render_content(tab):
         return summaries.layout
     elif tab == 'trends_tab':
         return trends.layout
+    elif tab == 'fruits_tab':
+        return fruits.layout
     else:
-        return summaries.layout
+        return fruits.layout
 
 
 if __name__ == '__main__':
