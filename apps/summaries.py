@@ -144,34 +144,34 @@ layout = [
         style={'marginTop': '5px'}
     ),
 
-    # data table
-    html.Div(
-        [
-            html.Div([
-                html.P('Top 5 grant recepients'),
-                dash_table.DataTable(
-                    id='grantsTable',
-                    columns=[{"name": i, "id": i} for i in grants.columns],
-                    pagination_settings={
-                        'current_page': 0,
-                        'page_size': PAGE_SIZE
-                    },
-                    pagination_mode='be',
-                    # filtering='be',
-                    # filtering_settings='',
-                    # sorting='be',
-                    # sorting_type='multi',
-                    # sorting_settings=[],
+    # # data table
+    # html.Div(
+    #     [
+    #         html.Div([
+    #             html.P('Top 5 grant recepients'),
+    #             dash_table.DataTable(
+    #                 id='grantsTable',
+    #                 columns=[{"name": i, "id": i} for i in grants.columns],
+    #                 pagination_settings={
+    #                     'current_page': 0,
+    #                     'page_size': PAGE_SIZE
+    #                 },
+    #                 pagination_mode='be',
+    #                 # filtering='be',
+    #                 # filtering_settings='',
+    #                 # sorting='be',
+    #                 # sorting_type='multi',
+    #                 # sorting_settings=[],
 
-                    style_data={'whiteSpace': 'normal'},
-                    css=[{
-                        'selector': '.dash-cell div.dash-cell-value',
-                        'rule': 'display: inline; white-space: inherit; overflow: inherit; text-overflow: inherit;'
-                    }],
-                )
-           ]) 
-        ]
-    )
+    #                 style_data={'whiteSpace': 'normal'},
+    #                 css=[{
+    #                     'selector': '.dash-cell div.dash-cell-value',
+    #                     'rule': 'display: inline; white-space: inherit; overflow: inherit; text-overflow: inherit;'
+    #                 }],
+    #             )
+    #        ]) 
+    #     ]
+    # )
 
 ]
 
@@ -267,45 +267,45 @@ def overallTime_callback(yearRange, summaryType, varChoice1):
 
 
 
-@app.callback(
-    Output('grantsTable', 'data'),
-    [
-        Input('grantsTable', 'pagination_settings'),
-        # Input('grantsTable', 'sorting_settings'),
-        # Input('grantsTable', 'filtering_settings'),
-    ]
-)
+# @app.callback(
+#     Output('grantsTable', 'data'),
+#     [
+#         Input('grantsTable', 'pagination_settings'),
+#         # Input('grantsTable', 'sorting_settings'),
+#         # Input('grantsTable', 'filtering_settings'),
+#     ]
+# )
 
-# def grantsTable_callback(page_s, sort_s, filter_s):
-def grantsTable_callback(page_s):
-    dff = grants
+# # def grantsTable_callback(page_s, sort_s, filter_s):
+# def grantsTable_callback(page_s):
+#     dff = grants
     
-    # filter_exps = filter_s.split(' && ')
-    # for f in filter_exps:
-    #     if ' eq ' in f:
-    #         col_name = f.split(' eq ')[0]
-    #         filter_value = f.split(' eq ')[1]
-    #         dff = dff.loc[dff[col_name] == filter_value]
-    #     elif ' > ' in f:
-    #         col_name = f.split(' > ')[0]
-    #         filter_value = f.split(' > ')[1]
-    #         dff = dff.loc[dff[col_name] > filter_value]
-    #     elif ' < ' in f:
-    #         col_name = f.split(' < ')[0]
-    #         filter_value = f.split(' < ')[1]
-    #         dff = dff.loc[dff[col_name] < filter_value]
+#     # filter_exps = filter_s.split(' && ')
+#     # for f in filter_exps:
+#     #     if ' eq ' in f:
+#     #         col_name = f.split(' eq ')[0]
+#     #         filter_value = f.split(' eq ')[1]
+#     #         dff = dff.loc[dff[col_name] == filter_value]
+#     #     elif ' > ' in f:
+#     #         col_name = f.split(' > ')[0]
+#     #         filter_value = f.split(' > ')[1]
+#     #         dff = dff.loc[dff[col_name] > filter_value]
+#     #     elif ' < ' in f:
+#     #         col_name = f.split(' < ')[0]
+#     #         filter_value = f.split(' < ')[1]
+#     #         dff = dff.loc[dff[col_name] < filter_value]
     
-    # if len(sort_s):
-    #     dff = dff.sort_values(
-    #         by=[col['column_id'] for col in sort_s],
-    #         ascending=[col['direction'] == 'asc' for col in sort_s],
-    #         inplace=False
-    #     ) 
+#     # if len(sort_s):
+#     #     dff = dff.sort_values(
+#     #         by=[col['column_id'] for col in sort_s],
+#     #         ascending=[col['direction'] == 'asc' for col in sort_s],
+#     #         inplace=False
+#     #     ) 
 
-    startP = page_s['current_page'] * page_s['page_size']
-    endP = (page_s['current_page'] + 1) * page_s['page_size']
+#     startP = page_s['current_page'] * page_s['page_size']
+#     endP = (page_s['current_page'] + 1) * page_s['page_size']
 
-    dff = dff.iloc[startP:endP]
+#     dff = dff.iloc[startP:endP]
 
-    return dff.to_dict('rows')
+#     return dff.to_dict('rows')
 
