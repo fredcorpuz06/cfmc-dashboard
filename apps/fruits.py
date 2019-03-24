@@ -5,9 +5,9 @@ import plotly.graph_objs as go
 import psycopg2
 import os
 
-# DATABASE_URL = os.environ['DATABASE_URL']
-# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-# cur = conn.cursor()
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+cur = conn.cursor()
 # cur.execute("SELECT region FROM funds")
 # fund_region = cur.fetchall()
 # cur.execute("SELECT region FROM grants")
@@ -15,6 +15,13 @@ import os
 
 # print(fund_region)
 # print(grant_region)
+
+cur.execute('SELECT label FROM forluck;')
+label = cur.fetchall()
+label = [l[0] for l in label]
+cur.execute('SELECT value FROM forluck;')
+value = cur.fetchall()
+value = [v[0] for v in value]
 
 from app import app
 
@@ -32,8 +39,8 @@ layout = html.Div(children=[
        figure=go.Figure(
             data=[
                 go.Bar(
-                # x=fruits1, y=sales1, name='SF'),
-                x=[1, 2, 3], y=[2, 4, 5], name='SF')
+                x=label, y=value, name='SF'),
+                # x=[1, 2, 3], y=[2, 4, 5], name='SF')
             ],
 
             #'layout':{
