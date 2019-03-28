@@ -19,7 +19,7 @@ class PlotlyGrapher():
 
         def inner(self, data=None):
             if not data:
-                print('Detected empty function call')
+                # print('Detected empty function call')
                 return func(self, data=placeholder_data)
             return func(self, data)
         return inner
@@ -73,9 +73,9 @@ class PlotlyGrapher():
 
 
     def sankey_diag(self, flows):
-        for k, f in flows.items()   :
-            # print(f.unique())
-            print(k, len(f))
+        # for k, f in flows.items()   :
+        #     print(f.unique())
+        #     print(k, len(f))
         node=dict(
             pad=15,
             thickness=20,
