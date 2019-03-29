@@ -1,0 +1,3 @@
+ffmpeg -i cfmc-dashboard-v4.mp4 -filter:v "setpts=0.5*PTS" -an cfmc-dash-sped.mp4
+ffmpeg -y -t 7 -i cfmc-dashboard-v4.mp4 -vf fps=10,scale=1000:-1:flags=lanczos,palettegen palette.png
+ffmpeg -y -t 7 -i cfmc-dashboard-v4.mp4 -i palette.png -filter_complex "fps=10,scale=1000:-1:flags=lanczos[x];[x][1:v]paletteuse" output.gif

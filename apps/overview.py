@@ -71,7 +71,7 @@ top_controls = [
         dcc.Dropdown(
             id="varChoice2",
             options=[{'label': v, 'value': v} for v in VAR_CHOICES],
-            value=VAR_CHOICES[1],
+            value=VAR_CHOICES[2],
             clearable=False,
         ),
         className="two columns",

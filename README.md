@@ -1,6 +1,7 @@
 # CFMC Dashboard
 This dashboard is for the use of the Board of Directors of the [Community Foundation of Middlesex County](https://middlesexcountycf.org). Trends in the incoming funds and the outgoing grants will be analyzed with the interactive visualizations on this dashboard. Eventually, a community-facing version will be constructed. 
-![dashboard-screenshot](./img/dashboard_v3.png)
+
+![dashboard-screenshot](./img/dashboard_v4.gif)
 
 
 # Usage

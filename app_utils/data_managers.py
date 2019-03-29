@@ -7,6 +7,10 @@ class DataMunger:
     def get_year_vars(self, df, yearRange, myVar, aggVars):
         '''Filter to years and in range and select variables.'''
         dff = df[(df.year >= yearRange[0]) & (df.year <= yearRange[1])]
+        print("*" *20)
+        print('In get_year_vars')
+        print(dff.columns)
+        print(myVar, aggVars)
         dff = dff[[myVar] + aggVars]
 
         return dff

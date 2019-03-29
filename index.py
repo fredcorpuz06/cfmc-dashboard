@@ -33,7 +33,7 @@ app.layout = html.Div(
                     id='tabs',
                     style={'height':'20', 'verticalAlign':'middle'},
                     children=[
-                        dcc.Tab(label='Funds Overview', value='overview_tab'),
+                        dcc.Tab(label='Funds & Grants Overview', value='overview_tab'),
                         dcc.Tab(label='Nonprofits at a Glance', value='nonprofits_tab'),
 
                     ],

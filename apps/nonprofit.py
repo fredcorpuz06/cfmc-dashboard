@@ -38,7 +38,7 @@ indicators = [
     ),
     indicator(
         "#00cc96",
-        "Perc. of $ awarded",
+        "% Awarded $/Requested $",
         "percGranted"
     ),
     indicator(
@@ -97,7 +97,7 @@ def percGranted_callback(name):
     dff = dff[dff.org_name == name]
     requested = dff.requested_damt.sum()
     granted = dff.grant_damt.sum()
-    return "{0:.2f}".format(granted/requested)
+    return "{0:.2f}%".format(granted*100/requested)
 
 @app.callback(
     Output("nRegion", "children"), 

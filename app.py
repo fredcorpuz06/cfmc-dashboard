@@ -23,7 +23,7 @@ try:
     funds = pd.read_sql_query("SELECT * FROM funds;", conn)
 except KeyError:
     print('*'*20)
-    print('IN PRODUCTION MODE')
+    print('IN DEVELOPMENT MODE')
     print('*'*20)
     grants = pd.read_csv("./data/grants_clean.csv")
     funds = pd.read_csv("./data/funds_clean.csv")
