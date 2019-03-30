@@ -4,7 +4,7 @@ library(tidyverse)
 
 
 
-setwd("./repos/cfmc-dashboard/r-scripts")
+setwd("./repos/cfmc-dashboard/data-cleaning-eda")
 
 
 

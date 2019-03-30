@@ -3,7 +3,7 @@ library(readxl)
 library(magrittr)
 library(tidyverse)
 
-setwd("./repos/cfmc-dashboard/r-scripts")
+setwd("./repos/cfmc-dashboard/data-cleaning-eda")
 
 
 
@@ -70,9 +70,50 @@ see_unique <- function(df, x) {
   count(df, !!x, sort = TRUE)
 }
 
-see_unique(funds_sub, Fund_Alpha)
+## How am I actually helping?
+see_unique(fund1, Program_Area) ## 40 different areas --> can make bigger groups
+see_unique(fund1, OrgProgramArea) ## (34) --> cam make bigger groups
+see_unique(fund1, Second_Program_Area)## "None" --> NA, (38) --> can make bigger groups
+see_unique(fund1, OrgType) ## (38) --> can make bigger groups
+see_unique(fund1, Effect_Code)  ## (NAs) (8 different effects)
 
+## Names
+see_unique(fund1, Program_Name) ## "general support" is a catch-all
+see_unique(fund1, Organization)  ## names of places ==> top 5 places who receive
 
+## how CFMC classifies/processes this money
+see_unique(fund1, Batch) # 8 committees        
+see_unique(fund1, Fdescript) ## 7 types of money flow 
+  ## geographic affiliate --> affiliate
+  ## remove agency funds
+
+see_unique(fund1, Cmte)  ## "None" --> NA
+see_unique(fund1, Grant_Typ) ## refer to flowchart  
+
+## Geo Impact
+see_unique(fund1, Region) ## ask Thayer to group stuff
+see_unique(fund1, Region__1) ## don't know what the difference is
+see_unique(fund1, County_Served)## (NAs) 
+
+## all of county: north county, south county, all county
+
+## Things to take into account when awarding grants
+see_unique(fund1, Request_Type) ## mostly operations/program development (23) --> can make bigger groups    
+see_unique(fund1, PrevGrant) ## "None" --> NA only (hasApplied, hasReceived, no)
+see_unique(fund1, Anonymous_Fund)  # missing
+
+## Source of the money
+see_unique(fund1, Fund_ID) # code name of fund who gave the grant
+see_unique(fund1, Fund_Alpha) # full name of fund
+see_unique(fund1, FirstFundID)           
+see_unique(fund1, LastFundID)         
+
+## Who did we impact? Demographics
+see_unique(fund1, Pop_Age) ## (NAs) overlapping age groups + catchalls
+see_unique(fund1, Disability) ## (NAs) (7) not sure how to collapse groups (maybe just binary)
+see_unique(fund1, Economic) ## (NAs) (2 - low income, homeless)     
+see_unique(fund1, Ethnic) ## (NAs) (2) no idea what these are ****  
+see_unique(fund1, Gender) ## (NAs) (2)
 
 
 ##-----------------
