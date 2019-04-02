@@ -43,4 +43,4 @@ Additionally, a live version of this dashboard is deployed on Heroku at [https:/
 
 # Authors 
 * [Frederick Corpuz](https://www.linkedin.com/in/frederick-corpuz-4392a713b/), student at Wesleyan University '20, analyzed the data, designed and built the visualizations, and deployed the dashboard for use
-* [Thayer Talbott](https://www.linkedin.com/in/mttalbott/), Vice President of Programs & Operations at CFMC, provided data/domain expertise and consulted on the the construction of the visualizations
+* [Thayer Talbott](https://www.linkedin.com/in/mttalbott/), Vice President of Programs & Operations at CFMC, provided data/domain expertise and consulted on the construction of the visualizations
