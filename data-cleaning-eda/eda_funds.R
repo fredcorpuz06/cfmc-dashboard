@@ -1,7 +1,7 @@
 library(tidyverse)
 library(readxl)
 
-setwd("./repos/cfmc-dashboard/r-scripts")
+setwd("./repos/cfmc-dashboard/data-cleaning-eda")
 
 
 
@@ -41,6 +41,23 @@ for_viz2 <- for_viz %>%
 
 ggplot(for_viz2) +
   geom_bar(aes(x = year, y = perc_money, fill = impact_area), stat = 'identity')
+
+## Which fund type contributes to impact_area?
+my_viz <- fund1 %>% 
+  group_by(year, Fdescript, impact_area) %>% 
+  summarize(total_DAmt = sum(Fund_DAmt),
+            count = n(),
+            avg_DAmt = total_DAmt/count) %>%
+  # filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
+filter(Fdescript %in% c("Designated", "Donor Advised", "Field of Interst", "Unrestricted"))
+ggplot(my_viz, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
+  geom_alluvium(aes(fill = Fdescript), width = 1/12) +
+  geom_stratum() +
+  geom_label(stat = 'stratum', label.strata = TRUE) +
+  ggtitle("$ From Funds to Impact Area") + 
+  facet_grid(~year)
+
+
 
 ## Every year, who are the top 5 places who receive the most money?
 
