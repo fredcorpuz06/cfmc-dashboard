@@ -13,6 +13,7 @@ colors = {"background": "#F3F6FA", "background_div": "white"}
 
 YEARS = funds.year.unique().astype(int)
 REGIONS = funds.region.unique()
+IMPACTS = funds.project_impact.unique()
 FUND_NAMES = funds.fund_name.unique()
 PAGE_SIZE = 15
 
@@ -50,9 +51,18 @@ top_controls = [
             options=[{'label': r, 'value': r} for r in REGIONS],
             values=[REGIONS[0], REGIONS[1]]
         ),
-        style={'width': '33%', 'float': 'left'}
+        style={'width': '25%', 'float': 'left'}
     ),
     
+    html.Div(
+        dcc.Checklist(
+            id='impactChoices2',
+            options=[{'label': r, 'value': r} for r in IMPACTS],
+            values=[IMPACTS[0], IMPACTS[1]]
+        ),
+        style={'width': '25%', 'float': 'left'}
+    ),
+
 
     html.Div([
         dcc.Dropdown(
@@ -63,9 +73,9 @@ top_controls = [
         ),
         daq.BooleanSwitch(
             id='nonProfitAll2',
-            on=True
+            on=False
         ),
-    ], style={'width': '66%', 'float': 'right'})
+    ], style={'width': '50%', 'float': 'right'})
 ]
 
 indicators = [
@@ -144,9 +154,10 @@ layout = [
         Input('nonProfitAll2', 'on'),
         Input('yearRange2', 'value'),
         Input('regionChoices2', 'values'),
+        Input('impactChoices2', 'values')
     ]
 )
-def inter_callback(names, allNps, yearRange, regions):
+def inter_callback(names, allNps, yearRange, regions, impacts):
     dff = funds
     dff = dff[(dff.year >= yearRange[0]) & (dff.year <= yearRange[1])]
     if len(regions) > 1:
@@ -154,6 +165,12 @@ def inter_callback(names, allNps, yearRange, regions):
     else:
         pat = regions[0]
     dff = dff[dff.region.str.contains(pat, regex=True)]
+    
+    if len(impacts) > 1:
+        pat = '|'.join(impacts)
+    else:
+        pat = impacts[0]
+    dff = dff[dff.project_impact.str.contains(pat, regex=True)]
 
     if len(names) > 1:
         pat = '|'.join(names)
