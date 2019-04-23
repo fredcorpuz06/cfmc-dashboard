@@ -19,14 +19,14 @@ app.config.suppress_callback_exceptions = True
 try:
     DATABASE_URL = os.environ['DATABASE_URL']
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    grants = pd.read_sql_query("SELECT * FROM grants;", conn)
-    funds = pd.read_sql_query("SELECT * FROM funds;", conn)
+    grants = pd.read_sql_query("SELECT * FROM grants2;", conn)
+    funds = pd.read_sql_query("SELECT * FROM funds2;", conn)
 except KeyError:
     print('*'*20)
     print('IN DEVELOPMENT MODE')
     print('*'*20)
-    grants = pd.read_csv("./data/grants_clean2.csv")
-    funds = pd.read_csv("./data/funds_clean2.csv")
+    grants = pd.read_csv("./data/grants_clean.csv")
+    funds = pd.read_csv("./data/funds_clean.csv")
 
 
 

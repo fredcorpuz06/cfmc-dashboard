@@ -2,7 +2,7 @@ https://www.techonthenet.com/postgresql/index.php
 
 heroku pg:psql postgresql-dimensional-36261 --app cfmc-dashboard
 
-CREATE TABLE grants (
+CREATE TABLE grants2 (
     year INT,
     program_name VARCHAR(240),
     org_name VARCHAR(80),
@@ -14,9 +14,9 @@ CREATE TABLE grants (
     lifetime_grant REAL
 );
 
-\copy grants FROM 'C:\Users\fredcorpuz06\Desktop\repos\cfmc-dashboard\data\grants_clean.csv' (FORMAT csv, HEADER);
+\copy grants2 FROM 'C:\Users\fredcorpuz06\Desktop\repos\cfmc-dashboard\data\grants_clean.csv' (FORMAT csv, HEADER);
 
-CREATE TABLE funds (
+CREATE TABLE funds2 (
     year INT,
     fund_name VARCHAR(240),
     fund_type VARCHAR(80),
@@ -29,7 +29,7 @@ CREATE TABLE funds (
     grant_damt REAL
 );
 
-\copy funds FROM 'C:\Users\fredcorpuz06\Desktop\repos\cfmc-dashboard\data\funds_clean.csv' (FORMAT csv, HEADER);
+\copy funds2 FROM 'C:\Users\fredcorpuz06\Desktop\repos\cfmc-dashboard\data\funds_clean.csv' (FORMAT csv, HEADER);
 
  SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_NAME = 'funds';
  ALTER TABLE funds RENAME COLUMN org_imapact TO org_impact;
