@@ -42,7 +42,7 @@ body{
 
 .header{
     margin:0px;
-    background-color:#228dd4;
+    background-color:#0a275d;
     height:70px;
     color:white;
     padding-right:2%;
@@ -63,8 +63,8 @@ body{
     font-size: 15px;
     }
 
-.indicator_value{
-    text-align:center;
+.indicator_value {
+    text-align: center;
     color: #2a3f5f;
     font-size: 35px;
 }

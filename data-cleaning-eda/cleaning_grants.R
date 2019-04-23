@@ -68,12 +68,13 @@ see_unique(grants, Alpha)
 ##----------------
 
 ## Impact categories
-educ <- c("Education (Community Wide/Schools)", "Scholarship", "Science" , "Positive Youth Development", "Technical")
-env <- c("Animal Related","Environment")
-poverty_alleviation <- c("Community Devel" , "Neighborhood Enhancement", "Human Services", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Capacity Building" , "Economic Security/Opportunity" , "Economic Development", "Public Safety" , "Capital" , "Haiti" , "United Way", "Essex" , "Miscellaneous", "Transportation", "Shelter/Housing", "Volunteer", "Wkforce Development")
-peace_and_human_rights <- c("Human Rights" , "Legal" , "Mental Health" , "Veterans", "Public Affairs", "Safer Communities" , "Religion", "Women & Girls" , "Boys & Young Men", "Civil Rights")
-public_health <- c("Disaster Relief", "Community Health (Health/Medical/Hospital Care)" , "Basic Human Need", "Disease/Disorder", "Dental", "General Health", "Food/Nutrition")
-arts <- c("Arts", "Recreation", "Camp", "Sports/Leisure", "Music" , "Community Enrichment (Arts/Culture/Heritage)", "Heritage Enhancement", "Theater", "Dance" )
+human_services <- c("Ambulance Service", "Basic Human Need", "Community Health (Health/Medical/Hospital Care)", "Dental", "Disaster Relief", "Disease/Disorder", "Essex", "Food/Nutrition", "General Health", "General Health", "Haiti", "Hospital", "Human Service", "Human Services", "Mental Health", "Shelter/Housing", "United Way")
+public_social_ben <- c("Capacity Building", "Capital", "Capital", "Career", "Civil Rights", "Community Devel", "Community Development", "Economic Development", "Economic Security/Opportunity", "Economic Security/Opportunity", "Fire Service", "Government Department", "Government", "Human Rights", "Land Trust", "Legal", "Miscellaneous", "Neighborhood Enhancement", "Public Affairs", "Public Safety", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Religion", "Safer Communities", "Transportation", "Volunteer", "Wkforce Development") 
+educ_youth_dev <- c("Child Care", "Education (Community Wide/Schools)", "Educational", "Library Service", "Positive Youth Development", "Scholarship", "School", "Science", "Technical", "University/College", "Youth Organization", "Youth Service Bureau")
+env <- c("Agricultural", "Environment")
+arts_culture <- c("Arts Related", "Arts", "Community Enrichment (Arts/Culture/Heritage)", "Dance", "Heritage Enhancement", "Heritage", "Historical Society", "Museum", "Music", "Theater")
+recreation <- c("Camp", "Recreation", "Sports/Leisure")
+special_int <- c("Animal Related", "Boys & Young Men", "Church/Synagogue", "Diversity", "Veterans", "Women & Girls", "Women's Service")
 
 ## Region groupings
 middletown <- c("Middletown")      
@@ -86,24 +87,22 @@ my_vars <- c("year", "Program_Name", "Alpha", "project_impact", "org_impact",
              "region", "Requested_DAmt", "Grant_DAmt", "lifetime_grant")
 
 grants_sub <- grants %>% 
-  mutate(project_impact = ifelse(Program_Area %in% educ, "Education",
-                                 ifelse(Program_Area %in% env, "Environment and Climate Change",
-                                        ifelse(Program_Area %in% poverty_alleviation, "Poverty Alleviation",
-                                               ifelse(Program_Area %in% peace_and_human_rights, "Peace and Human Rights",
-                                                      ifelse(Program_Area %in% public_health, "Public Health",
-                                                             ifelse(Program_Area %in% arts, "Arts", "Uncategorized")))))),
-         # secondary_impact = ifelse(Second_Program_Area %in% educ, "Education",
-         #                           ifelse(Second_Program_Area %in% env, "Environment and Climate Change",
-         #                                  ifelse(Second_Program_Area %in% poverty_alleviation, "Poverty Alleviation",
-         #                                         ifelse(Second_Program_Area %in% peace_and_human_rights, "Peace and Human Rights",
-         #                                                ifelse(Second_Program_Area %in% public_health, "Public Health",
-         #                                                       ifelse(Second_Program_Area %in% arts, "Arts", "Uncategorized")))))),
-         org_impact = ifelse(OrgType %in% educ, "Education",
-                             ifelse(OrgType %in% env, "Environment and Climate Change",
-                                    ifelse(OrgType %in% poverty_alleviation, "Poverty Alleviation",
-                                           ifelse(OrgType %in% peace_and_human_rights, "Peace and Human Rights",
-                                                  ifelse(OrgType %in% public_health, "Public Health",
-                                                         ifelse(OrgType %in% arts, "Arts", "Uncategorized")))))),
+  mutate(project_impact = ifelse(Program_Area %in% human_services, "Human Services",
+                                 ifelse(Program_Area %in% public_social_ben, "Public and Social Benefit",
+                                        ifelse(Program_Area %in% educ_youth_dev, "Education and Youth Development",
+                                               ifelse(Program_Area %in% env, "Environment",
+                                                      ifelse(Program_Area %in% arts_culture, "Arts and Culture",
+                                                             ifelse(Program_Area %in% recreation, "Recreation",
+                                                                    ifelse(Program_Area %in% special_int, "Special Interests", 
+                                                                           "Uncategorized"))))))),
+         org_impact = ifelse(OrgType %in% human_services, "Human Services",
+                             ifelse(OrgType %in% public_social_ben, "Public and Social Benefit",
+                                    ifelse(OrgType %in% educ_youth_dev, "Education and Youth Development",
+                                           ifelse(OrgType %in% env, "Environment",
+                                                  ifelse(OrgType %in% arts_culture, "Arts and Culture",
+                                                         ifelse(OrgType %in% recreation, "Recreation",
+                                                                ifelse(OrgType %in% special_int, "Special Interests", 
+                                                                       "Uncategorized"))))))),
          year = as.numeric(str_extract(Batch, "(?<=-)[0-9]{2}")) %>%
           {ifelse(. > 90, . + 1900, . + 2000)} %>% 
           as.factor,
@@ -124,4 +123,4 @@ a <- grants_sub %>%
   filter(org_name == "Buttonwood Tree/NEAR")
 a
 
-write_csv(grants_sub, "../data/grants_clean.csv")
+write_csv(grants_sub, "../data/grants_clean2.csv")

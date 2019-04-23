@@ -3,6 +3,7 @@ This dashboard is for the use of the Board of Directors of the [Community Founda
 
 ![dashboard-screenshot](./img/dashboard_v4.gif)
 
+👉[See my presentation here](https://docs.google.com/presentation/d/12u9zwlJS0NGWuW4Cp419TKtWGUNafRbr2FHAbzKmS4c/edit?usp=sharing)
 
 # Usage
 

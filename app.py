@@ -25,14 +25,14 @@ except KeyError:
     print('*'*20)
     print('IN DEVELOPMENT MODE')
     print('*'*20)
-    grants = pd.read_csv("./data/grants_clean.csv")
-    funds = pd.read_csv("./data/funds_clean.csv")
+    grants = pd.read_csv("./data/grants_clean2.csv")
+    funds = pd.read_csv("./data/funds_clean2.csv")
 
 
 
 
 #returns top indicator div
-def indicator(color, text, id_value):
+def indicator(text, id_value):
     return html.Div(
         [
             

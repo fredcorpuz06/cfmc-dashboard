@@ -63,3 +63,7 @@ ggplot(my_viz, aes(y = total_DAmt, axis1 = Fdescript, axis2 = impact_area)) +
 
 
 ## What are the best indicators of receiving a large fund?
+
+rvc <- c("RVC Unres DA", "RVC Essex PT", "RVC Low Cty PT")
+a <- funds %>% 
+  filter(fund_name %in% rvc)

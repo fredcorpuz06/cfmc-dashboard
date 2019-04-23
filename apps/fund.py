@@ -11,9 +11,9 @@ from app import app, indicator, grants, funds
 from app_utils import graphers
 colors = {"background": "#F3F6FA", "background_div": "white"}
 
-YEARS = grants.year.unique().astype(int)
-REGIONS = grants.region.unique()
-NONPROFIT_NAMES = grants.org_name.unique()
+YEARS = funds.year.unique().astype(int)
+REGIONS = funds.region.unique()
+FUND_NAMES = funds.fund_name.unique()
 PAGE_SIZE = 15
 
 # Utils
@@ -24,7 +24,7 @@ top_controls = [
     
     html.Div(
         dcc.RangeSlider(
-            id='yearRange1',
+            id='yearRange2',
             min=YEARS.min(),
             max=YEARS.max(),
     #         marks={y: str(y) for y in YEARS},
@@ -46,7 +46,7 @@ top_controls = [
 
     html.Div(
         dcc.Checklist(
-            id='regionChoices1',
+            id='regionChoices2',
             options=[{'label': r, 'value': r} for r in REGIONS],
             values=[REGIONS[0], REGIONS[1]]
         ),
@@ -56,13 +56,13 @@ top_controls = [
 
     html.Div([
         dcc.Dropdown(
-            id='nonprofitName1',
-            options=[{'label': s, 'value': s} for s in NONPROFIT_NAMES],
-            value=[NONPROFIT_NAMES[0],NONPROFIT_NAMES[1]],
+            id='nonprofitName2',
+            options=[{'label': s, 'value': s} for s in FUND_NAMES],
+            value=[FUND_NAMES[0],FUND_NAMES[1]],
             multi=True,
         ),
         daq.BooleanSwitch(
-            id='nonProfitAll1',
+            id='nonProfitAll2',
             on=True
         ),
     ], style={'width': '66%', 'float': 'right'})
@@ -70,25 +70,25 @@ top_controls = [
 
 indicators = [
     indicator(
-        "No. of Grants",
-        "nGrants"
+        "No. of funds",
+        "nFunds"
     ),
     indicator(
         "Most Impacted Region",
-        "grantsAwarded"
+        "fundsAwarded"
     ),
     indicator(
         "Most Impacted Project Area",
-        "grantRegion"
+        "fundRegions"
     ),
 ]
 
 orgs_table = [
     html.Div([
-        html.P('All grants of selected organization'),
+        html.P('All funds of selected organization'),
         dash_table.DataTable(
-            id='orgsTable',
-            columns=[{"name": i, "id": i} for i in grants.columns],
+            id='fundsTable',
+            columns=[{"name": i, "id": i} for i in funds.columns],
             pagination_settings={
                 'current_page': 0,
                 'page_size': PAGE_SIZE
@@ -102,13 +102,12 @@ orgs_table = [
         )
     ])
 ]
-
 # Graphs
-grantN_bar = [
+fundN_bar = [
     html.Div([
         html.P('No. of grants received'),
         dcc.Graph(
-            id='grantsNPie',
+            id='fundsNPie',
             config=dict(displayModeBar=False),
             style={'height': '89%', 'width': '98%'}
         ),
@@ -118,7 +117,7 @@ grantN_bar = [
     html.Div([
         html.P('Project Impacts'),
         dcc.Graph(
-            id='impactsNPie',
+            id='funds2NPie',
             config=dict(displayModeBar=False),
             style={'height': '89%', 'width': '98%'}
         ),
@@ -127,95 +126,28 @@ grantN_bar = [
 
 ]
 
+
 layout = [
     html.Div(top_controls, className="row"),
     html.Div(indicators, className='row'),
-    html.Div(grantN_bar, className='row'),
+    html.Div(fundN_bar, className='row'),
     html.Div(orgs_table),
-    html.Div(id='intermediate-value', style={'display': 'none'})
+    html.Div(id='intermediate-value2', style={'display': 'none'})
 ]
 
 
-@app.callback(
-    [
-        Output("nGrants", "children"), 
-        Output("grantsAwarded", "children"), 
-        Output("grantRegion", "children"), 
-    ],
-    [
-        Input('intermediate-value', 'children'),
-    ]
-)
-def nFunds_callback(json_dff):
-    dff = pd.read_json(json_dff, orient='split')
-    n_grants = dff.shape[0]
-    most_region = dff.region.mode().tolist()[0]
-    most_impact = dff.project_impact.mode().tolist()[0]
-
-    return n_grants, most_region, most_impact
 
 @app.callback(
-    Output('orgsTable', 'data'),
+    Output('intermediate-value2', 'children'),
     [
-        Input('intermediate-value', 'children'),
-        Input('orgsTable', 'pagination_settings')
+        Input('nonprofitName2', 'value'),
+        Input('nonProfitAll2', 'on'),
+        Input('yearRange2', 'value'),
+        Input('regionChoices2', 'values'),
     ]
 )
-def orgsTable_callback(json_dff, page_s):
-    dff = pd.read_json(json_dff, orient='split')
-    startP = page_s['current_page'] * page_s['page_size']
-    endP = (page_s['current_page'] + 1) * page_s['page_size']
-
-    dff = dff.iloc[startP:endP]
-
-    return dff.to_dict('rows')
-
-@app.callback(
-    Output('grantsNPie', 'figure'),
-    [
-        Input('intermediate-value', 'children'),
-    ]
-)
-def grantsNPie_callback(json_dff):
-    dff = pd.read_json(json_dff, orient='split')
-    g = dff[['region', 'program_name']].groupby('region')
-    rez = g.agg(lambda x: np.shape(x)[0])['program_name']
-    slices = [{
-        'name': 'Regions',
-        'label': rez.index.tolist(),
-        'value': rez.tolist(),
-    }]
-    return pg.pie_chart(slices)
-
-@app.callback(
-    Output('impactsNPie', 'figure'),
-    [
-        Input('intermediate-value', 'children'),
-    ]
-)
-def impactsNPie_callback(json_dff):
-    dff = pd.read_json(json_dff, orient='split')
-    g = dff[['project_impact', 'program_name']].groupby('project_impact')
-    rez = g.agg(lambda x: np.shape(x)[0])['program_name']
-    slices = [{
-        'name': 'Project Impact',
-        'label': rez.index.tolist(),
-        'value': rez.tolist(),
-    }]
-    return pg.pie_chart(slices)
-
-
-@app.callback(
-    Output('intermediate-value', 'children'),
-    [
-        Input('nonprofitName1', 'value'),
-        Input('nonProfitAll1', 'on'),
-        Input('yearRange1', 'value'),
-        Input('regionChoices1', 'values'),
-    ]
-)
-def orgsTable_callback(names, allNps, yearRange, regions):
-    dff = grants
+def inter_callback(names, allNps, yearRange, regions):
+    dff = funds
     dff = dff[(dff.year >= yearRange[0]) & (dff.year <= yearRange[1])]
     if len(regions) > 1:
         pat = '|'.join(regions)
@@ -228,7 +160,84 @@ def orgsTable_callback(names, allNps, yearRange, regions):
     else:
         pat = names[0]
     # turn on the nonprofit selector
+    # print(dff.fund_name.str.contains(pat, regex=True))
     if allNps:
-        dff = dff[dff.org_name.str.contains(pat, regex=True)]
+        dff = dff[dff.fund_name.str.contains(pat, regex=True).replace(np.nan, False)]
+
 
     return dff.to_json(date_format='iso', orient='split')
+
+
+
+
+
+@app.callback(
+    [
+        Output("nFunds", "children"), 
+        Output("fundsAwarded", "children"), 
+        Output("fundRegions", "children"), 
+    ],
+    [
+        Input('intermediate-value2', 'children'),
+    ]
+)
+def nFunds_callback(json_dff):
+    dff = pd.read_json(json_dff, orient='split')
+    n_grants = dff.shape[0]
+    most_region = dff.region.mode().tolist()[0]
+    most_impact = dff.project_impact.mode().tolist()[0]
+
+    return n_grants, most_region, most_impact
+
+
+
+@app.callback(
+    Output('fundsTable', 'data'),
+    [
+        Input('intermediate-value2', 'children'),
+        Input('fundsTable', 'pagination_settings'),
+    ]
+)
+def fundsTable_callback(json_dff, page_s):
+    dff = pd.read_json(json_dff, orient='split')
+    startP = page_s['current_page'] * page_s['page_size']
+    endP = (page_s['current_page'] + 1) * page_s['page_size']
+
+    dff = dff.iloc[startP:endP]
+
+    return dff.to_dict('rows')
+
+
+@app.callback(
+    Output('fundsNPie', 'figure'),
+    [
+        Input('intermediate-value2', 'children'),
+    ]
+)
+def fundsNPie_callback(json_dff):
+    dff = pd.read_json(json_dff, orient='split')
+    g = dff[['region', 'program_name']].groupby('region')
+    rez = g.agg(lambda x: np.shape(x)[0])['program_name']
+    slices = [{
+        'name': 'Regions',
+        'label': rez.index.tolist(),
+        'value': rez.tolist(),
+    }]
+    return pg.pie_chart(slices)
+
+@app.callback(
+    Output('funds2NPie', 'figure'),
+    [
+        Input('intermediate-value2', 'children'),
+    ]
+)
+def funds2NPie_callback(json_dff):
+    dff = pd.read_json(json_dff, orient='split')
+    g = dff[['project_impact', 'program_name']].groupby('project_impact')
+    rez = g.agg(lambda x: np.shape(x)[0])['program_name']
+    slices = [{
+        'name': 'Project Impact',
+        'label': rez.index.tolist(),
+        'value': rez.tolist(),
+    }]
+    return pg.pie_chart(slices)

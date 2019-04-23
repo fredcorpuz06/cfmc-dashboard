@@ -8,7 +8,6 @@ from dash.dependencies import Input, Output
 
 from app import app, indicator, grants, funds
 from app_utils import graphers, data_managers
-colors = {"background": "#F3F6FA", "background_div": "white"}
 
 
 YEARS = grants.year.unique().astype(int)
@@ -161,7 +160,7 @@ layout = [
     # second row graphs
     html.Div(bar_and_line, className='row', style={'marginTop': '5px'}),
     # data table
-    html.Div(data_table),
+    # html.Div(data_table),
 
 ]
 
@@ -217,6 +216,7 @@ def overallBar_callback(yearRange, summaryType, varChoice1):
     }]           
     
     return pg.bar_chart(bars)
+    
 
 @app.callback(
     Output('overallTime', 'figure'),

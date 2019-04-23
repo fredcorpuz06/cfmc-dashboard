@@ -1,0 +1,106 @@
+HUMAN SERVICES
+"Ambulance Service"
+"Basic Human Need"
+"Community Health (Health/Medical/Hospital Care)"
+"Dental"
+"Disaster Relief"
+"Disease/Disorder"
+"Essex"
+"Food/Nutrition"
+"General Health"
+"General Health"
+"Haiti"
+"Hospital"
+"Human Service"
+"Human Services"
+"Mental Health"
+"Shelter/Housing"
+"United Way"
+
+
+PUBLIC AND SOCIAL BENEFIT
+"Capacity Building"
+"Capital"
+"Capital"
+"Career"
+"Civil Rights"
+"Community Devel"
+"Community Development"
+"Economic Development"
+"Economic Security/Opportunity"
+"Economic Security/Opportunity"
+"Fire Service"
+"Government Department"
+"Government"
+"Human Rights"
+"Land Trust"
+"Legal"
+"Miscellaneous"
+"Neighborhood Enhancement"
+"Public Affairs"
+"Public Safety"
+"Public/Social Benefit (Civic Improve/Social Srvcs)"
+"Religion"
+"Safer Communities"
+"Transportation"
+"Volunteer"
+"Wkforce Development"
+
+
+EDUCATION & YOUTH DEVELOPMENT
+"Child Care"
+"Education (Community Wide/Schools)"
+"Educational"
+"Library Service"
+"Positive Youth Development"
+"Scholarship"
+"School"
+"Science"
+"Technical"
+"University/College"
+"Youth Organization"
+"Youth Service Bureau"
+
+
+ENVIRONMENT
+"Agricultural"
+"Environment"
+
+
+ARTS AND CULTURE
+"Arts Related"
+"Arts"
+"Community Enrichment (Arts/Culture/Heritage)"
+"Dance"
+"Heritage Enhancement"
+"Heritage"
+"Historical Society"
+"Museum"
+"Music"
+"Theater"
+
+
+
+RECREATION
+"Camp"
+"Recreation"
+"Sports/Leisure"
+
+SPECIAL INTERESTS
+"Animal Related"
+"Boys & Young Men"
+"Church/Synagogue"
+"Diversity"
+"Veterans"
+"Women & Girls"
+"Women's Service"
+
+
+---
+human_services <- c("Ambulance Service", "Basic Human Need", "Community Health (Health/Medical/Hospital Care)", "Dental", "Disaster Relief", "Disease/Disorder", "Essex", "Food/Nutrition", "General Health", "General Health", "Haiti", "Hospital", "Human Service", "Human Services", "Mental Health", "Shelter/Housing", "United Way")
+public_social_ben <- c("Capacity Building", "Capital", "Capital", "Career", "Civil Rights", "Community Devel", "Community Development", "Economic Development", "Economic Security/Opportunity", "Economic Security/Opportunity", "Fire Service", "Government Department", "Government", "Human Rights", "Land Trust", "Legal", "Miscellaneous", "Neighborhood Enhancement", "Public Affairs", "Public Safety", "Public/Social Benefit (Civic Improve/Social Srvcs)", "Religion", "Safer Communities", "Transportation", "Volunteer", "Wkforce Development") 
+educ_youth_dev <- c("Child Care", "Education (Community Wide/Schools)", "Educational", "Library Service", "Positive Youth Development", "Scholarship", "School", "Science", "Technical", "University/College", "Youth Organization", "Youth Service Bureau")
+env <- c("Agricultural", "Environment")
+arts_culture <- c("Arts Related", "Arts", "Community Enrichment (Arts/Culture/Heritage)", "Dance", "Heritage Enhancement", "Heritage", "Historical Society", "Museum", "Music", "Theater")
+recreation <- c("Camp", "Recreation", "Sports/Leisure")
+special_int <- c("Animal Related", "Boys & Young Men", "Church/Synagogue", "Diversity", "Veterans", "Women & Girls", "Women's Service")

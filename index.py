@@ -6,7 +6,7 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
 from app import app, server
-from apps import overview, nonprofit
+from apps import overview, nonprofit, fund, reference
 
 
 
@@ -34,7 +34,9 @@ app.layout = html.Div(
                     style={'height':'20', 'verticalAlign':'middle'},
                     children=[
                         dcc.Tab(label='Funds & Grants Overview', value='overview_tab'),
+                        dcc.Tab(label='Funds at a Glance', value='funds_tab'),
                         dcc.Tab(label='Nonprofits at a Glance', value='nonprofits_tab'),
+                        # dcc.Tab(label='Reference Tables', value='references_tab'),
 
                     ],
                     value='overview_tab',
@@ -64,6 +66,10 @@ def render_content(tab):
         return overview.layout
     elif tab == 'nonprofits_tab':
         return nonprofit.layout
+    elif tab == 'funds_tab':
+        return fund.layout
+    elif tab == 'references_tab':
+        return reference.layout
 
 if __name__ == '__main__':
     app.run_server(debug=True)
