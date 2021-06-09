@@ -21,7 +21,7 @@ markupsafe==1.1.1
 nbformat==4.4.0
 numpy==1.16.2
 pandas==0.24.2
-pip==19.0.3
+pip==19.2
 plotly==3.7.1
 psycopg2==2.7.6.1
 pytz==2018.9
